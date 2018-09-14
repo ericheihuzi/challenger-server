@@ -5,14 +5,15 @@
 //  Created by Jinxiansen on 2018/6/5.
 //
 
+import FluentPostgreSQL
 
 struct UserInfo : BaseSQLModel {
     var id: Int?
     
+    var userID: String?
+    
     static var entity: String { return self.name + "s" }
 
-    var userID: String
-    
     var age: Int?
     var sex: Int?
     var nickName: String?
@@ -20,9 +21,18 @@ struct UserInfo : BaseSQLModel {
     var birthday: String?
     var location: String?
     var picName: String?
-    
+  
 }
 
+// 设置外键
+extension UserInfo {
+    static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+        return Database.create(self, on: connection) { builder in
+            try addProperties(to: builder)
+            builder.reference(from: \.userID, to: \User.userID)
+        }
+    }
+}
 
 extension UserInfo {
     
@@ -51,16 +61,3 @@ extension UserInfo {
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

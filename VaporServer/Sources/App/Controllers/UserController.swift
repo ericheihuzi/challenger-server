@@ -21,9 +21,11 @@ final class UserController: RouteCollection {
         group.post(User.self, at: "register", use: registerUserHandler)
         group.post(PasswordContainer.self, at: "changePassword", use: changePasswordHandler)
         group.post(UserInfoContainer.self, at: "updateInfo", use: updateUserInfoHandler)
+        group.post(ChallengeInfoContainer.self, at: "updateChallengeInfo", use: updateChallengeInfoHandler)
         
         group.get("getUserInfo", use: getUserInfoHandler)
         group.get("avatar",String.parameter, use: getUserAvatarHandler)
+        group.get("getChallengeInfo", use: getChallengeInfoHandler)
         
         group.post("exit", use: exitUserHandler)
         
@@ -119,6 +121,7 @@ extension UserController {
         }
     }
     
+    //TODO: 退出登录
     func exitUserHandler(_ req: Request) throws -> Future<Response> {
         
         return try req.content.decode(TokenContainer.self).flatMap({ container in
@@ -171,6 +174,7 @@ extension UserController {
         })
     }
     
+    //TODO: 获取用户信息
     func getUserInfoHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self,
@@ -201,6 +205,39 @@ extension UserController {
                 return try ResponseJSON<UserInfo>(data: existInfo).encode(for: req)
             })
         })
+    }
+    
+    //TODO: 获取挑战信息
+    func getChallengeInfoHandler(_ req: Request) throws -> Future<Response> {
+        
+        guard let token = req.query[String.self,
+                                    at: "token"] else {
+                                        return try ResponseJSON<Empty>(status: .error,
+                                                                       message: "缺少 token 参数").encode(for: req)
+        }
+        
+        let bearToken = BearerAuthorization(token: token)
+        return AccessToken
+            .authenticate(using: bearToken, on: req)
+            .flatMap({ (existToken) in
+                
+                guard let existToken = existToken else {
+                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+                }
+                
+                let first = ChallengeInfo
+                    .query(on: req)
+                    .filter(\.userID == existToken.userID)
+                    .first()
+                
+                return first.flatMap({ (existInfo) in
+                    guard let existInfo = existInfo else {
+                        return try ResponseJSON<Empty>(status: .error,
+                                                       message: "挑战信息为空").encode(for: req)
+                    }
+                    return try ResponseJSON<ChallengeInfo>(data: existInfo).encode(for: req)
+                })
+            })
     }
     
     //TODO: 获取头像
@@ -275,6 +312,50 @@ extension UserController {
         })
     }
     
+    //TODO: 更新挑战信息
+    func updateChallengeInfoHandler(_ req: Request,container: ChallengeInfoContainer) throws -> Future<Response> {
+        
+        let bearToken = BearerAuthorization(token: container.token)
+        return AccessToken
+            .authenticate(using: bearToken, on: req)
+            .flatMap({ (existToken) in
+                guard let existToken = existToken else {
+                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+                }
+                
+                return ChallengeInfo
+                    .query(on: req)
+                    .filter(\.userID == existToken.userID)
+                    .first()
+                    .flatMap({ (existInfo) in
+                        
+                        let challengeInfo: ChallengeInfo?
+                        if var existInfo = existInfo { //存在则更新。
+                            challengeInfo = existInfo.update(with: container)
+                        } else {
+                            challengeInfo = ChallengeInfo(id: nil,
+                                                          userID: existToken.userID,
+                                                          wordRanking: nil,
+                                                          rankingChange: nil,
+                                                          challengeTime: container.challengeTime,
+                                                          score: container.score,
+                                                          grade: container.grade,
+                                                          rewscore: container.rewscore,
+                                                          cawscore: container.cawscore,
+                                                          inwscore: container.inwscore,
+                                                          mewscore: container.mewscore,
+                                                          spwscore: container.spwscore,
+                                                          crwscore: container.crwscore)
+                        }
+                        
+                        return (challengeInfo!.save(on: req).flatMap({ (info) in
+                            return try ResponseJSON<Empty>(status: .ok,
+                                                           message: "更新成功").encode(for: req)
+                        }))
+                    })
+            })
+    }
+    
 }
 
 
@@ -312,5 +393,22 @@ struct UserInfoContainer: Content {
     var birthday: String?
     var location: String?
     var picImage: File?
+    
+}
+
+struct ChallengeInfoContainer: Content {
+    
+    var token:String
+    
+    var challengeTime: Int?
+    var score: Int?
+    var grade: String?
+    
+    var rewscore: Int?
+    var cawscore: Int?
+    var inwscore: Int?
+    var mewscore: Int?
+    var spwscore: Int?
+    var crwscore: Int?
     
 }

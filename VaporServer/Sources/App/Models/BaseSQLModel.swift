@@ -12,7 +12,6 @@ import Authentication
 
 public typealias BaseSQLModel = PostgreSQLModel & Migration & Content
 
-
 //MARK: 以下方法用于继承协议默认实现 createdAt、updatedAt、deletedAt 和 entity 属性，
 //但即使如此，你也需要在 继承者里进行声明 createdAt、updatedAt、deletedAt，例如下面 MyModel 示例。
 //如果你有更好的办法可以避免这三个属性重复声明，请告诉我，非常感谢！
@@ -59,19 +58,3 @@ struct MyModel: SuperModel {
         self.count = count
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
