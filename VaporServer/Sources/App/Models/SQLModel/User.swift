@@ -33,13 +33,12 @@ struct User: BaseSQLModel {
     
 }
 
-
 extension User: BasicAuthenticatable {
     static var usernameKey: WritableKeyPath<User, String> = \.account
     static var passwordKey: WritableKeyPath<User, String> = \.password
 }
 
-// 设置主键（唯一）
+// 设置唯一键
 extension User {
     static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in

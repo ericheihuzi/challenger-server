@@ -33,7 +33,7 @@ struct GameInfo : BaseSQLModel {
     var crscore: Int?
 }
 
-// 设置主键（唯一）
+// 设置唯一键
 extension GameInfo {
     static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in

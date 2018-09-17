@@ -89,10 +89,10 @@ extension GameController {
             .query(on: req)
             .all()
             .flatMap({ (game) in
-                let fultueWords = game.compactMap({ GameInfo -> GameInfo in
+                let gameList = game.compactMap({ GameInfo -> GameInfo in
                     var w = GameInfo;w.id = nil;return w
                 })
-                return try ResponseJSON<[GameInfo]>(data: fultueWords).encode(for: req)
+                return try ResponseJSON<[GameInfo]>(data: gameList).encode(for: req)
             })
     }
     
