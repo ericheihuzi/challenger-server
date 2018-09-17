@@ -22,7 +22,6 @@ let package = Package(
         .package(url: "https://github.com/vapor/auth.git", from: "2.0.0-rc"),
         .package(url: "https://github.com/vapor/crypto.git", from: "3.0.0"),
         .package(url: "https://github.com/vapor/console.git", from: "3.0.0"),
-        .package(url: "https://github.com/vapor/redis.git", from: "3.0.0"),
         
         .package(url: "https://github.com/vapor/redis.git", from: "3.0.0-rc"),
         
@@ -40,7 +39,6 @@ let package = Package(
                                             "Multipart",
                                             "Authentication",
                                             "Crypto",
-                                            "Redis",
                                             "Logging",
                                             "Redis",
                                             "SwiftSoup",
