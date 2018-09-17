@@ -7,13 +7,14 @@
 
 import Foundation
 import Vapor
+import FluentPostgreSQL
 
 struct GameInfo : BaseSQLModel {
     var id: Int?
     
-    static var entity: String { return self.name + "s" }
+    var gameID: String?
     
-    var gameID: String
+    static var entity: String { return self.name + "s" }
     
     var title: String?
     var iconName: String?
@@ -32,52 +33,13 @@ struct GameInfo : BaseSQLModel {
     var crscore: Int?
 }
 
-/*
+// 设置唯一键
 extension GameInfo {
-    
-    mutating func update(with container: GameInfoContainer) -> GameInfo {
-        
-        if let new = container.title {
-            self.title = new
+    static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+        return Database.create(self, on: connection) { builder in
+            try addProperties(to: builder)
+            builder.unique(on: \.gameID)
         }
-        if let new = container.price {
-            self.price = new
-        }
-        if let new = container.category {
-            self.category = new
-        }
-        if let new = container.level {
-            self.level = new
-        }
-        if let new = container.round {
-            self.round = new
-        }
-        if let new = container.color {
-            self.color = new
-        }
-        
-        if let new = container.rescore {
-            self.rescore = new
-        }
-        if let new = container.cascore {
-            self.cascore = new
-        }
-        if let new = container.inscore {
-            self.inscore = new
-        }
-        if let new = container.mescore {
-            self.mescore = new
-        }
-        if let new = container.spscore {
-            self.spscore = new
-        }
-        if let new = container.crscore {
-            self.crscore = new
-        }
-        
-        return self
     }
-    
 }
-*/
 

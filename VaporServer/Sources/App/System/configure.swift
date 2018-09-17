@@ -3,6 +3,7 @@ import APIErrorMiddleware
 import Leaf
 import Authentication
 import FluentPostgreSQL
+import Redis
 
 /// Called before your application initializes.
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
@@ -26,7 +27,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     try routes(router)
     services.register(router, as: Router.self)
     
-    let myService = NIOServerConfig.default(port: 8030)
+    let myService = NIOServerConfig.default(port: 8088)
     services.register(myService)
 
     /* * ** ** ** ** *** ** ** ** Middleware ** ** ** ** ** ** ** ** ** */
@@ -72,31 +73,37 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     migrations.add(model: PageView.self, database: .psql)
     migrations.add(model: AccessToken.self, database: .psql)
     migrations.add(model: RefreshToken.self, database: .psql)
-    migrations.add(model: Record.self, database: .psql)
+    migrations.add(model: Record.self, database: .psql) //动态
     
-    migrations.add(model: Word.self, database: .psql)
-    migrations.add(model: Idiom.self, database: .psql)
-    migrations.add(model: XieHouIdiom.self, database: .psql)
-    migrations.add(model: Report.self, database: .psql)
-    migrations.add(model: UserInfo.self, database: .psql)
-    migrations.add(model: LGWork.self, database: .psql)
-    migrations.add(model: CrawlerLog.self, database: .psql)
-    migrations.add(model: ScreenShot.self, database: .psql)
-    migrations.add(model: BookChapter.self, database: .psql)
-    migrations.add(model: BookInfo.self, database: .psql)
-    migrations.add(model: HKJob.self, database: .psql)
-    migrations.add(model: SinWord.self, database: .psql)
-    migrations.add(model: EnJob.self, database: .psql)
-    migrations.add(model: EnJobDetail.self, database: .psql)
-    migrations.add(model: EnJobApply.self, database: .psql)
+//    migrations.add(model: Word.self, database: .psql) //字
+//    migrations.add(model: Idiom.self, database: .psql) //词
+//    migrations.add(model: XieHouIdiom.self, database: .psql) //歇后语
+    migrations.add(model: Report.self, database: .psql) //举报
+    migrations.add(model: UserInfo.self, database: .psql) //用户信息
+//    migrations.add(model: LGWork.self, database: .psql) //拉钩
+//    migrations.add(model: CrawlerLog.self, database: .psql) //爬虫日志
+//    migrations.add(model: ScreenShot.self, database: .psql) //爬虫相关
+//    migrations.add(model: BookChapter.self, database: .psql)
+//    migrations.add(model: BookInfo.self, database: .psql)
+//    migrations.add(model: HKJob.self, database: .psql)
+//    migrations.add(model: SinWord.self, database: .psql)
+//    migrations.add(model: EnJob.self, database: .psql)
+//    migrations.add(model: EnJobDetail.self, database: .psql)
+//    migrations.add(model: EnJobApply.self, database: .psql)
     
+    migrations.add(model: ChallengeInfo.self, database: .psql)
     migrations.add(model: GameInfo.self, database: .psql)
+    migrations.add(model: UserGameInfo.self, database: .psql)
+    migrations.add(model: WorldRanking.self, database: .psql)
     
     //test
     migrations.add(model: MyModel.self, database: .psql)
     
     services.register(migrations)
     
+    /* * ** ** ** ** *** ** ** ** Redis ** ** ** ** ** ** ** ** ** */
+    // register Redis provider
+    //try services.register(RedisProvider())
 
 }
 
