@@ -30,17 +30,6 @@ extension RankingController {
     //TODO: 获取游戏排名
     func getWorldRankingHandler(_ req: Request) throws -> Future<Response> {
         
-//        return req.withNewConnection(to: .redis) { redis in
-//            // use redis connection
-//        }
-        
-//        return req.withNewConnection(to: .redis) { redis in
-//            // send INFO command to redis
-//            return redis.command("INFO")
-//                // map the resulting RedisData to a String
-//                .map { $0.string ?? "" }
-//        }
-        
         return ChallengeInfo
             .query(on: req)
             .all()
