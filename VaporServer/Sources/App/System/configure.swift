@@ -27,7 +27,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     try routes(router)
     services.register(router, as: Router.self)
     
-    let myService = NIOServerConfig.default(port: 8088)
+    let myService = NIOServerConfig.default(port: 8030)
     services.register(myService)
 
     /* * ** ** ** ** *** ** ** ** Middleware ** ** ** ** ** ** ** ** ** */
@@ -59,12 +59,12 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     
     services.register(middlewares)
     
-    /* * ** ** ** ** *** ** ** ** SQL ** ** ** ** ** ** ** ** ** */
+    /* ** ** ** ** *** ** ** ** SQL ** ** ** ** ** ** ** ** ** */
     try services.register(FluentPostgreSQLProvider())
     let pgSQL = PostgreSQLDatabaseConfig.loadSQLConfig(env)
     services.register(pgSQL)
     
-    /* * ** ** ** ** *** ** ** ** 𝐌odels ** ** ** ** ** ** ** ** ** */
+    /* ** ** ** ** *** ** ** ** 𝐌odels ** ** ** ** ** ** ** ** ** */
     var migrations = MigrationConfig()
     
     migrations.add(model: User.self, database: .psql)
@@ -101,7 +101,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     
     services.register(migrations)
     
-    /* * ** ** ** ** *** ** ** ** Redis ** ** ** ** ** ** ** ** ** */
+    /* ** ** ** ** *** ** ** ** Redis ** ** ** ** ** ** ** ** ** */
     // register Redis provider
     //try services.register(RedisProvider())
 

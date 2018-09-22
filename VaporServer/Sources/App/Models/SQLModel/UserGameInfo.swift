@@ -20,8 +20,8 @@ struct UserGameInfo: BaseSQLModel {
     // 0-未支付/未解锁，1-已支付/已解锁
     var ispay: Int?
     
-    var newscore: String?
-    var maxscore: String?
+    var newscore: Int?
+    var maxscore: Int?
     
     var level: Int?
     var ranking: Int?

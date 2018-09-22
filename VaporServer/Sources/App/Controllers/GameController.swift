@@ -96,7 +96,7 @@ extension GameController {
             })
     }
     
-    //TODO: 获取游戏信息
+    //TODO: 获取指定游戏信息
     func getGameInfoHandler(_ req: Request) throws -> Future<Response> {
         
         guard let gameID = req.query[String.self,
@@ -105,21 +105,33 @@ extension GameController {
                                                                         message: "缺少 gameID 参数").encode(for: req)
         }
         
-        return GameInfo.query(on: req)
+        let first = GameInfo
+            .query(on: req)
             .filter(\.gameID == gameID)
-            .all()
-            .flatMap({ (cords) in
-                guard cords.count > 0 else {
-                    return try ResponseJSON<[GameInfo]>(status: .ok,
-                                                      message: "没有数据了",
-                                                      data: []).encode(for: req)
-                }
-                return try ResponseJSON<[GameInfo]>(data: cords).encode(for: req)
-            })
+            .first()
+        
+        return first.flatMap({ (existInfo) in
+            guard let existInfo = existInfo else {
+                return try ResponseJSON<Empty>(status: .error,
+                                               message: "游戏信息为空").encode(for: req)
+            }
+            return try ResponseJSON<GameInfo>(data: existInfo).encode(for: req)
+        })
+        
+//        return GameInfo.query(on: req)
+//            .filter(\.gameID == gameID)
+//            .all()
+//            .flatMap({ (cords) in
+//                guard cords.count > 0 else {
+//                    return try ResponseJSON<GameInfo>(status: .ok,
+//                                                      message: "没有数据了").encode(for: req)
+//                }
+//                return try ResponseJSON<GameInfo>(data: cords).encode(for: req)
+//            })
 
     }
     
-    //TODO: 获取用户指定游戏的信息
+    //TODO: 获取用户游戏信息
     func getUserGameInfoHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self,
@@ -152,7 +164,7 @@ extension GameController {
                 return first.flatMap({ (existInfo) in
                     guard let existInfo = existInfo else {
                         return try ResponseJSON<Empty>(status: .error,
-                                                       message: "游戏信息为空").encode(for: req)
+                                                       message: "用户游戏信息为空").encode(for: req)
                     }
                     return try ResponseJSON<UserGameInfo>(data: existInfo).encode(for: req)
                 })
@@ -227,8 +239,8 @@ struct UserGameInfoContainer: Content {
     
     var ispay: Int?
     
-    var newscore: String?
-    var maxscore: String?
+    var newscore: Int?
+    var maxscore: Int?
     
     var level: Int?
     
