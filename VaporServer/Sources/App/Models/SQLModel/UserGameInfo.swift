@@ -1,6 +1,6 @@
 //
 //  UserGameInfo.swift
-//  APIErrorMiddleware
+//  APP
 //
 //  Created by 黑胡子 on 2018/9/14.
 //

@@ -1,6 +1,6 @@
 //
 //  GameInfo.swift
-//  APIErrorMiddleware
+//  APP
 //
 //  Created by 黑胡子 on 2018/9/13.
 //
@@ -12,7 +12,7 @@ import FluentPostgreSQL
 struct GameInfo : BaseSQLModel {
     var id: Int?
     
-    var gameID: String?
+    var gameID: String
     
     static var entity: String { return self.name + "s" }
     
@@ -21,7 +21,7 @@ struct GameInfo : BaseSQLModel {
     var coverName: String?
     var price: Double?
     var category: String?
-    var join: Int?
+    //var join: Int
     var level: Int?
     var round: Int?
     var color: String?

@@ -32,6 +32,6 @@ public func routes(_ router: Router) throws {
 //    try router.register(collection: EnJobController())
     
     try router.register(collection: GameController())
-//    try router.register(collection: RankingController())
+    try router.register(collection: ChallengeController())
     
 }

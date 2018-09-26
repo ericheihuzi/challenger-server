@@ -10,7 +10,7 @@ import FluentPostgreSQL
 struct UserInfo : BaseSQLModel {
     var id: Int?
     
-    var userID: String?
+    var userID: String
     
     static var entity: String { return self.name + "s" }
 

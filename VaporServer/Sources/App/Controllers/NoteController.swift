@@ -4,10 +4,10 @@
 //
 //  Created by 晋先森 on 2018/9/6.
 //
-
 import Foundation
 import Vapor
 import Fluent
+import FluentPostgreSQL
 import Authentication
 
 struct NoteController: RouteCollection {
@@ -18,9 +18,14 @@ struct NoteController: RouteCollection {
             
             // 提交 Live
             router.post(LiveContainer.self, at: "live", use: postLiveDataHandler)
+            // 获取所有 Lives ,可选参数 page
+            router.get("lives", use: getLivesDataHandler)
             
-            // 获取所有 Lives ,可选参数 page, token；如果传了 token 则为获取我的 Lives
-            router.get("live", use: getLiveDataHandler)
+            router.post(BillContainer.self, at: "bill", use: postBillDataHandler)
+            router.get("bills", use: getBillsDataHandler)
+            
+            
+            
         }
     }
 }
@@ -28,17 +33,97 @@ struct NoteController: RouteCollection {
 
 extension NoteController {
     
-    func getLiveDataHandler(_ req: Request) throws -> Future<Response> {
+    
+    //MARK: Bill
+    func getBillsDataHandler(_ req: Request) throws -> Future<Response> {
         
         let token = BearerAuthorization(token: req.token)
+        
         return AccessToken.authenticate(using: token, on: req).flatMap({
-            return NoteLive.query(on: req)
-                .filter(\.userID == $0?.userID ?? "")
-                .query(page: req.page)
-                .all()
-                .flatMap({
-                    return try ResponseJSON<[NoteLive]>(data: $0).encode(for: req)
+            guard let user = $0 else {
+                return try ResponseJSON<Empty>(status: .token).encode(for: req)
+            }
+            
+            //分页、排序(time)。
+            let futureAll = NoteBill.query(on: req).filter(\.userID == user.userID).query(page: req.page).sort(\.time,.descending).all()
+            
+            return futureAll.flatMap({
+                return try ResponseJSON<[NoteBill]>(data: $0).encode(for: req)
+            })
+        })
+    }
+    
+    
+    private func postBillDataHandler(_ req: Request, container: BillContainer) throws -> Future<Response> {
+        
+        let token = BearerAuthorization(token: container.token)
+        return AccessToken.authenticate(using: token, on: req).flatMap({
+            
+            guard let user = $0 else {
+                return try ResponseJSON<Empty>(status: .token).encode(for: req)
+            }
+            
+            let bill = NoteBill(id: nil, userID: user.userID, time: TimeManager.currentDate(), total: container.total, number: container.number ?? 1, type: container.type ?? 1 , desc: container.desc)
+            
+            return bill.save(on: req).flatMap({ _ in
+                return try ResponseJSON<Empty>(status: .ok, message: "保存成功").encode(for: req)
+            })
+        })
+        
+    }
+    
+    //MARK: Live
+    func getLivesDataHandler(_ req: Request) throws -> Future<Response> {
+        
+        let token = BearerAuthorization(token: req.token)
+        return AccessToken.authenticate(using: token, on: req).flatMap({ _ in
+            
+            let futureAllLives = NoteLive.query(on: req).query(page: req.page).all()
+            
+            return futureAllLives.flatMap({
+                
+                // 取出查询到的动态数组中的所有 userID
+                let allIDs = $0.compactMap({ return $0.userID })
+                
+                // 取出此用户数组中的 用户信息，可能会出现 5条动态，只有3条用户信息，因为5条信息总共是3个人发的
+                let futureAllInfos = UserInfo.query(on: req).filter(\.userID ~~ allIDs).all()
+                
+                struct ResultLive: Content {
+                    
+                    var userInfo: UserInfo?
+                    
+                    var title: String
+                    var time: TimeInterval?
+                    var content: String?
+                    var imgName: String?
+                    var desc: String?
+                }
+                
+                return flatMap(to: Response.self, futureAllLives, futureAllInfos, { (lives, infos) in
+                    
+                    var results = [ResultLive]()
+                    
+                    //拼接返回数据，双层 forEach 效率怕是有影响，期待有更好的方法。🙄
+                    lives.forEach({ (live) in
+                        
+                        var result = ResultLive(userInfo: nil,
+                                                title: live.title,
+                                                time: live.time,
+                                                content: live.content,
+                                                imgName: live.imgName,
+                                                desc: live.desc)
+                        
+                        infos.forEach({
+                            if $0.userID == live.userID {
+                                result.userInfo = $0
+                            }
+                        })
+                        
+                        results.append(result)
+                    })
+                    return try ResponseJSON<[ResultLive]>(data: results).encode(for: req)
                 })
+            })
         })
     }
     
@@ -93,8 +178,12 @@ fileprivate struct LiveContainer: Content {
 }
 
 
-
-
-
-
-
+fileprivate struct BillContainer: Content {
+    
+    var token: String
+    var type: Int?
+    var total: Float
+    var number: Int?
+    var desc: String? //
+    
+}

@@ -94,7 +94,9 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     migrations.add(model: ChallengeInfo.self, database: .psql)
     migrations.add(model: GameInfo.self, database: .psql)
     migrations.add(model: UserGameInfo.self, database: .psql)
-    migrations.add(model: WorldRanking.self, database: .psql)
+    migrations.add(model: ChallengeLog.self, database: .psql)
+    migrations.add(model: Actor.self, database: .psql)
+    migrations.add(model: Grade.self, database: .psql)
     
     //test
     migrations.add(model: MyModel.self, database: .psql)
