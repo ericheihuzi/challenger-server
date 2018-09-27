@@ -18,6 +18,13 @@ struct Grade: BaseSQLModel {
     var describe: String?
     var minscore: Int?
     var maxscore: Int?
+    
+    init(grade: String?, describe: String?, minscore: Int?, maxscore: Int?) {
+        self.grade = grade
+        self.describe = describe
+        self.minscore = minscore
+        self.maxscore = maxscore
+    }
 }
 
 // 设置唯一键
