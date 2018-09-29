@@ -17,12 +17,13 @@ final class ChallengeController: RouteCollection {
         
         let group = router.grouped("challenges")
         
-        group.post(ChallengeInfoContainer.self, at: "updateChallengeInfo", use: updateChallengeInfoHandler)
-        group.post(ChallengeLogContainer.self, at: "updateChallengeLog", use: updateChallengeLogHandler)
+//        group.post(ChallengeInfoContainer.self, at: "updateChallengeInfo", use: updateChallengeInfoHandler)
+//        group.post(ChallengeLogContainer.self, at: "updateChallengeLog", use: updateChallengeLogHandler)
         
-        group.get("getChallengeInfo", use: getChallengeInfoHandler)
-        group.get("getChallengeLog", use: getChallengeLogHandler)
-        group.get("getGameChallengeLog", use: getGameChallengeLogHandler)
+        group.get("getChallengeInfo", use: getChallengeInfoHandler) // 获取挑战信息
+        group.get("getChallengeLog", use: getChallengeLogHandler) // 获取挑战记录
+        group.get("getGameChallengeLog", use: getGameChallengeLogHandler) // 获取指定游戏挑战记录
+        group.get("getTodayWorldRanking", use: getTodayWorldRankingHandler) // 获取全部游戏的当日排名列表
         
     }
     
@@ -38,29 +39,29 @@ private extension User {
 
 extension ChallengeController {
     
-    //TODO: 获取挑战信息
+    //MARK: 获取挑战信息
     func getChallengeInfoHandler(_ req: Request) throws -> Future<Response> {
-        
+
         guard let token = req.query[String.self,
                                     at: "token"] else {
                                         return try ResponseJSON<Empty>(status: .error,
                                                                        message: "缺少 token 参数").encode(for: req)
         }
-        
+
         let bearToken = BearerAuthorization(token: token)
         return AccessToken
             .authenticate(using: bearToken, on: req)
             .flatMap({ (existToken) in
-                
+
                 guard let existToken = existToken else {
                     return try ResponseJSON<Empty>(status: .token).encode(for: req)
                 }
-                
+
                 let first = ChallengeInfo
                     .query(on: req)
                     .filter(\.userID == existToken.userID)
                     .first()
-                
+
                 return first.flatMap({ (existInfo) in
                     guard let existInfo = existInfo else {
                         return try ResponseJSON<Empty>(status: .error,
@@ -71,7 +72,7 @@ extension ChallengeController {
             })
     }
     
-    //TODO: 获取全部游戏挑战记录
+    //MARK: 获取全部游戏挑战记录
     func getChallengeLogHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self,
@@ -104,7 +105,7 @@ extension ChallengeController {
             })
     }
     
-    //TODO: 获取指定游戏挑战记录
+    //MARK: 获取指定游戏挑战记录
     func getGameChallengeLogHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self,
@@ -143,77 +144,111 @@ extension ChallengeController {
             })
     }
     
-    //TODO: 更新挑战信息
-    func updateChallengeInfoHandler(_ req: Request,container: ChallengeInfoContainer) throws -> Future<Response> {
-        
-        let bearToken = BearerAuthorization(token: container.token)
-        return AccessToken
-            .authenticate(using: bearToken, on: req)
-            .flatMap({ (existToken) in
-                guard let existToken = existToken else {
-                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
-                }
-                
-                return ChallengeInfo
-                    .query(on: req)
-                    .filter(\.userID == existToken.userID)
-                    .first()
-                    .flatMap({ (existInfo) in
-                        
-                        let challengeInfo: ChallengeInfo?
-                        if var existInfo = existInfo { //存在则更新。
-                            challengeInfo = existInfo.update(with: container)
-                        } else {
-                            challengeInfo = ChallengeInfo(id: nil,
-                                                          userID: existToken.userID,
-                                                          wordRanking: nil,
-                                                          rankingChange: nil,
-                                                          challengeTime: container.challengeTime,
-                                                          score: container.score,
-                                                          grade: container.grade,
-                                                          rewscore: container.rewscore,
-                                                          cawscore: container.cawscore,
-                                                          inwscore: container.inwscore,
-                                                          mewscore: container.mewscore,
-                                                          spwscore: container.spwscore,
-                                                          crwscore: container.crwscore)
-                        }
-                        
-                        return (challengeInfo!.save(on: req).flatMap({ (info) in
-                            return try ResponseJSON<Empty>(status: .ok,
-                                                           message: "更新成功").encode(for: req)
-                        }))
-                    })
-            })
-    }
+//    //MARK: 更新挑战信息
+//    func updateChallengeInfoHandler(_ req: Request,container: ChallengeInfoContainer) throws -> Future<Response> {
+//
+//        let bearToken = BearerAuthorization(token: container.token)
+//        return AccessToken
+//            .authenticate(using: bearToken, on: req)
+//            .flatMap({ (existToken) in
+//                guard let existToken = existToken else {
+//                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+//                }
+//
+//                return ChallengeInfo
+//                    .query(on: req)
+//                    .filter(\.userID == existToken.userID)
+//                    .first()
+//                    .flatMap({ (existInfo) in
+//
+//                        let res = container.rewscore!
+//                        let cas = container.cawscore!
+//                        let ins = container.inwscore!
+//                        let mes = container.mewscore!
+//                        let sps = container.spwscore!
+//                        let crs = container.crwscore!
+//
+//                        let arr = [res,cas,ins,mes,sps,crs]
+//                        let score = arr.max()
+//
+//                        let challengeInfo: ChallengeInfo?
+//                        if var existInfo = existInfo { //存在则更新。
+//                            existInfo.score = score
+//                            challengeInfo = existInfo.update(with: container)
+//                        } else {
+//                            challengeInfo = ChallengeInfo(userID: existToken.userID,
+//                                                          challengeTime: container.challengeTime,
+//                                                          score: score!,
+//                                                          grade: container.grade,
+//                                                          rewscore: container.rewscore,
+//                                                          cawscore: container.cawscore,
+//                                                          inwscore: container.inwscore,
+//                                                          mewscore: container.mewscore,
+//                                                          spwscore: container.spwscore,
+//                                                          crwscore: container.crwscore,
+//                                                          sex: container.sex,
+//                                                          nickName: container.nickName,
+//                                                          location: container.location,
+//                                                          picName: container.picName)
+//                        }
+//
+//                        return (challengeInfo!.save(on: req).flatMap({ (info) in
+//                            return try ResponseJSON<Empty>(status: .ok,
+//                                                           message: "更新成功").encode(for: req)
+//                        }))
+//                    })
+//            })
+//    }
     
-    //TODO: 更新挑战记录
-    func updateChallengeLogHandler(_ req: Request,container: ChallengeLogContainer) throws -> Future<Response> {
+//    //MARK: 更新挑战记录
+//    func updateChallengeLogHandler(_ req: Request,container: ChallengeLogContainer) throws -> Future<Response> {
+//
+//        let bearToken = BearerAuthorization(token: container.token)
+//        return AccessToken
+//            .authenticate(using: bearToken, on: req)
+//            .flatMap({ (existToken) in
+//                guard let existToken = existToken else {
+//                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+//                }
+//
+//                return ChallengeLog
+//                    .query(on: req)
+//                    .filter(\.userID == existToken.userID)
+//                    .first()
+//                    .flatMap({ (existInfo) in
+//
+//                        let challengeLog: ChallengeLog?
+//                        challengeLog = ChallengeLog(userID: existToken.userID,
+//                                                    gameID:container.gameID,
+//                                                    score: container.score)
+//
+//                        return (challengeLog!.save(on: req).flatMap({ (info) in
+//                            return try ResponseJSON<Empty>(status: .ok,
+//                                                           message: "更新成功").encode(for: req)
+//                        }))
+//                    })
+//            })
+//    }
+    
+    //MARK: 获取全部游戏的当日排名列表
+    func getTodayWorldRankingHandler(_ req: Request) throws -> Future<Response> {
         
-        let bearToken = BearerAuthorization(token: container.token)
-        return AccessToken
-            .authenticate(using: bearToken, on: req)
-            .flatMap({ (existToken) in
-                guard let existToken = existToken else {
-                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
-                }
-                
-                return ChallengeLog
-                    .query(on: req)
-                    .filter(\.userID == existToken.userID)
-                    .first()
-                    .flatMap({ (existInfo) in
-                        
-                        let challengeLog: ChallengeLog?
-                        challengeLog = ChallengeLog(userID: existToken.userID,
-                                                    gameID:container.gameID,
-                                                    score: container.score)
-                        
-                        return (challengeLog!.save(on: req).flatMap({ (info) in
-                            return try ResponseJSON<Empty>(status: .ok,
-                                                           message: "更新成功").encode(for: req)
-                        }))
-                    })
+        let nowDate = Date()
+        let formatter = DateFormatter()
+        formatter.timeZone = NSTimeZone.system
+        formatter.dateFormat = "yyyy-MM-dd"
+        let date = formatter.string(from: nowDate)
+        
+        return ChallengeInfo
+            .query(on: req)
+            .filter(\.date == date)
+            .sort(\.maxscore,.descending) //ascending or descending:升序或降序
+            .all()
+            .flatMap({ (info) in
+                let infoList = info.compactMap({ ChallengeInfo -> ChallengeInfo in
+                    var w = ChallengeInfo;w.id = nil;return w
+                })
+                return try ResponseJSON<[ChallengeInfo]>(data: infoList).encode(for: req)
             })
     }
     
@@ -243,29 +278,37 @@ fileprivate struct AccessContainer: Content {
     }
 }
 
-struct ChallengeInfoContainer: Content {
-    
-    var token:String
-    
-    var challengeTime: Int?
-    var score: Int?
-    var grade: String?
-    
-    var rewscore: Int?
-    var cawscore: Int?
-    var inwscore: Int?
-    var mewscore: Int?
-    var spwscore: Int?
-    var crwscore: Int?
-    
-}
+//struct ChallengeInfoContainer: Content {
+//
+//    var token:String
+//
+//    var challengeTime: Int?
+//    var score: Int?
+//    var grade: String?
+//
+//    var rewscore: Int?
+//    var cawscore: Int?
+//    var inwscore: Int?
+//    var mewscore: Int?
+//    var spwscore: Int?
+//    var crwscore: Int?
+//
+//    var sex: Int?
+//    var nickName: String?
+//    var location: String?
+//    var picName: String?
+//
+//    var date: String?
+//    var time: String?
+//
+//}
 
-struct ChallengeLogContainer: Content {
-    
-    var token:String
-    var gameID:String
-    
-    var score: Int
-    
-}
+//struct ChallengeLogContainer: Content {
+//
+//    var token:String
+//    var gameID:String
+//
+//    var score: Int
+//
+//}
 

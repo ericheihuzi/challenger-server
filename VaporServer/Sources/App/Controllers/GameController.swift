@@ -15,27 +15,35 @@ final class GameController: RouteCollection {
         
         let group = router.grouped("games")
         
-        group.post(UserGameInfoContainer.self, at: "updateUserGameInfo", use: updateUserGameInfoHandler)
-        group.post(ActorContainer.self, at: "updateGameActor", use: updateGameActorHandler)
+        // 更新用户指定游戏的信息
+        //group.post(UserGameInfoContainer.self, at: "updateUserGameInfo", use: updateUserGameInfoHandler)
+        // 更新参与者信息
+        //group.post(ActorContainer.self, at: "updateGameActor", use: updateGameActorHandler)
         
-        group.get("getGameList", use: getGameListHandler)
-        group.get("getGameInfo", use: getGameInfoHandler)
-        group.get("getUserGameInfo", use: getUserGameInfoHandler)
-        group.get("icon",String.parameter, use: getGameIconHandler)
-        group.get("cover",String.parameter, use: getGameCoverHandler)
+        // 更新用户指定游戏的信息/更新参与者信息/更新挑战信息--/更新挑战记录
+        group.post(ActorInfoContainer.self, at: "updateActorInfo", use: updateActorInfoHandler)
+        //group.post(ActorInfoContainer.self, at: "updateChallengeInfo", use: updateChallengeInfoHandler)
         
-        group.get("getGameActor", use: getGameActorHandler)
-        group.get("getGameRanking", use: getGameRankingHandler)
-        group.get("getTodayWorldRanking", use: getTodayWorldRankingHandler)
-        group.get("getGameJoin", use: getGameJoinHandler)
+        group.get("getGameList", use: getGameListHandler) // 获取游戏列表
+        group.get("getGameInfo", use: getGameInfoHandler) // 获取指定游戏信息
+        group.get("getUserGameInfo", use: getUserGameInfoHandler) // 获取用户游戏信息
+        group.get("icon",String.parameter, use: getGameIconHandler) // 获取游戏图标
+        group.get("cover",String.parameter, use: getGameCoverHandler) // 获取游戏封面
+        
+        group.get("getGameActor", use: getGameActorHandler) // 获取游戏参与者列表
+        group.get("getGameRanking", use: getGameRankingHandler) //获取指定游戏的排名列表
+        //group.get("getTodayWorldRanking", use: getTodayWorldRankingHandler) // 获取全部游戏的当日排名列表
+        group.get("getGameJoin", use: getGameJoinHandler) // 获取指定游戏的参与人数
     }
     
 }
 
 extension GameController {
     
-    //TODO: 更新用户指定游戏的信息
-    func updateUserGameInfoHandler(_ req: Request,container: UserGameInfoContainer) throws -> Future<Response> {
+    //MARK: 更新用户指定游戏的信息/更新参与者信息/更新挑战信息--/更新挑战记录
+    func updateActorInfoHandler(_ req: Request,container: ActorInfoContainer) throws -> Future<Response> {
+        
+        try updateChallengeInfoHandler(req, container: container).always {} //更新挑战信息
         
         let bearToken = BearerAuthorization(token: container.token)
         return AccessToken
@@ -45,35 +53,128 @@ extension GameController {
                     return try ResponseJSON<Empty>(status: .token).encode(for: req)
                 }
                 
-                return UserGameInfo
+                return ActorInfo
                     .query(on: req)
                     .filter(\.userID == existToken.userID)
                     .filter(\.gameID == container.gameID)
                     .first()
                     .flatMap({ (existInfo) in
                         
-                        let userGameInfo: UserGameInfo?
-                        if var existInfo = existInfo { //存在则更新。
-                            userGameInfo = existInfo.update(with: container)
+                        let res = container.rescore!
+                        let cas = container.cascore!
+                        let ins = container.inscore!
+                        let mes = container.mescore!
+                        let sps = container.spscore!
+                        let crs = container.crscore!
+                        
+                        let arr = [res,cas,ins,mes,sps,crs]
+                        let new = arr.max() ?? 0
+                        var max:Int = 0
+                        
+                        let oldMax = existInfo?.maxscore ?? 0
+                        if new > oldMax {
+                            max = new
                         } else {
-                            userGameInfo = UserGameInfo(id: nil,
-                                                          userID: existToken.userID,
-                                                          gameID: container.gameID,
-                                                          ispay: container.ispay,
-                                                          newscore: container.newscore,
-                                                          maxscore: container.maxscore,
-                                                          level: container.level,
-                                                          ranking: nil,
-                                                          rankingChange: nil,
-                                                          rescore: container.rescore,
-                                                          cascore: container.cascore,
-                                                          inscore: container.inscore,
-                                                          mescore: container.mescore,
-                                                          spscore: container.spscore,
-                                                          crscore: container.crscore)
+                            max = oldMax
                         }
                         
-                        return (userGameInfo!.save(on: req).flatMap({ (info) in
+//                        var grade: String = "段位"
+//                        if max >= 0 && max <= 50 {
+//                            grade = "石头"
+//                        } else if max > 50 && max <= 60 {
+//                            grade = "痴者"
+//                        } else if max > 60 && max <= 80 {
+//                            grade = "愚者"
+//                        } else if max > 80 && max <= 110 {
+//                            grade = "凡者"
+//                        } else if max > 110 && max <= 120 {
+//                            grade = "明者"
+//                        } else if max > 120 && max <= 140 {
+//                            grade = "灵者"
+//                        } else if max > 140 && max <= 150 {
+//                            grade = "智者"
+//                        } else if max > 150 && max <= 200 {
+//                            grade = "歌者"
+//                        } else if max > 200 && max <= 300 {
+//                            grade = "归零者"
+//                        }
+                        
+//                        let oldRew = existInfo?.rewscore ?? 0
+//                        let oldCaw = existInfo?.cawscore ?? 0
+//                        let oldInw = existInfo?.inwscore ?? 0
+//                        let oldMew = existInfo?.mewscore ?? 0
+//                        let oldSpw = existInfo?.spwscore ?? 0
+//                        let oldCrw = existInfo?.crwscore ?? 0
+//
+//                        var newRew = container.rescore ?? 0
+//                        var newCaw = container.cascore ?? 0
+//                        var newInw = container.inscore ?? 0
+//                        var newMew = container.mescore ?? 0
+//                        var newSpw = container.spscore ?? 0
+//                        var newCrw = container.crscore ?? 0
+//
+//                        if newRew < oldRew { newRew = oldRew }
+//                        if newCaw < oldCaw { newCaw = oldCaw }
+//                        if newInw < oldInw { newInw = oldInw }
+//                        if newMew < oldMew { newMew = oldMew }
+//                        if newSpw < oldSpw { newSpw = oldSpw }
+//                        if newCrw < oldCrw { newCrw = oldCrw }
+                        
+                        let actorInfo: ActorInfo?
+                        if var existInfo = existInfo { //存在则更新。
+                            
+                            existInfo.maxscore = max
+                            existInfo.newscore = new
+//                            existInfo.grade = grade
+                            
+//                            existInfo.rewscore = newRew
+//                            existInfo.cawscore = newCaw
+//                            existInfo.inwscore = newInw
+//                            existInfo.mewscore = newMew
+//                            existInfo.spwscore = newSpw
+//                            existInfo.crwscore = newCrw
+                            
+                            actorInfo = existInfo.update(with: container)
+                        } else {
+                            actorInfo = ActorInfo(userID: existToken.userID,
+                                                  gameID: container.gameID,
+                                                  
+                                                  ispay: container.ispay,
+                                                  
+//                                                  challengeTime: container.challengeTime,
+                                                  maxscore: max,
+                                                  newscore: new,
+//                                                  grade: grade,
+                                                  level: container.level,
+                                                  
+//                                                  rewscore: newRew,
+//                                                  cawscore: newCaw,
+//                                                  inwscore: newInw,
+//                                                  mewscore: newMew,
+//                                                  spwscore: newSpw,
+//                                                  crwscore: newCrw,
+                                
+                                                  rescore: container.rescore,
+                                                  cascore: container.cascore,
+                                                  inscore: container.inscore,
+                                                  mescore: container.mescore,
+                                                  spscore: container.spscore,
+                                                  crscore: container.crscore,
+                                                  
+                                                  sex: container.sex,
+                                                  nickName: container.nickName,
+                                                  location: container.location,
+                                                  picName: container.picName)
+                        }
+                        
+                        let challengeLog: ChallengeLog?
+                        challengeLog = ChallengeLog(userID: existToken.userID,
+                                                    gameID: container.gameID,
+                                                    score: new)
+                        
+                        challengeLog!.save(on: req).always {} // 更新挑战记录
+                        
+                        return (actorInfo!.save(on: req).flatMap({ (info) in
                             return try ResponseJSON<Empty>(status: .ok,
                                                            message: "更新成功").encode(for: req)
                         }))
@@ -81,7 +182,173 @@ extension GameController {
             })
     }
     
-    //TODO: 获取游戏列表
+    //MARK: 更新挑战信息
+    func updateChallengeInfoHandler(_ req: Request,container: ActorInfoContainer) throws -> Future<Response> {
+        
+        let bearToken = BearerAuthorization(token: container.token)
+        return AccessToken
+            .authenticate(using: bearToken, on: req)
+            .flatMap({ (existToken) in
+                guard let existToken = existToken else {
+                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+                }
+                
+                return ChallengeInfo
+                    .query(on: req)
+                    .filter(\.userID == existToken.userID)
+                    .first()
+                    .flatMap({ (existInfo) in
+                        
+                        let res = container.rescore!
+                        let cas = container.cascore!
+                        let ins = container.inscore!
+                        let mes = container.mescore!
+                        let sps = container.spscore!
+                        let crs = container.crscore!
+                        
+                        let arr = [res,cas,ins,mes,sps,crs]
+                        let new = arr.max() ?? 0
+                        var max:Int = 0
+                        
+                        let oldMax = existInfo?.maxscore ?? 0
+                        if new > oldMax {
+                            max = new
+                        } else {
+                            max = oldMax
+                        }
+                        
+                        var grade: String = "段位"
+                        if max >= 0 && max <= 50 {
+                            grade = "石头"
+                        } else if max > 50 && max <= 60 {
+                            grade = "痴者"
+                        } else if max > 60 && max <= 80 {
+                            grade = "愚者"
+                        } else if max > 80 && max <= 110 {
+                            grade = "凡者"
+                        } else if max > 110 && max <= 120 {
+                            grade = "明者"
+                        } else if max > 120 && max <= 140 {
+                            grade = "灵者"
+                        } else if max > 140 && max <= 150 {
+                            grade = "智者"
+                        } else if max > 150 && max <= 200 {
+                            grade = "歌者"
+                        } else if max > 200 && max <= 300 {
+                            grade = "归零者"
+                        }
+                        
+                        let oldRew = existInfo?.rewscore ?? 0
+                        let oldCaw = existInfo?.cawscore ?? 0
+                        let oldInw = existInfo?.inwscore ?? 0
+                        let oldMew = existInfo?.mewscore ?? 0
+                        let oldSpw = existInfo?.spwscore ?? 0
+                        let oldCrw = existInfo?.crwscore ?? 0
+                        
+                        var newRew = container.rescore ?? 0
+                        var newCaw = container.cascore ?? 0
+                        var newInw = container.inscore ?? 0
+                        var newMew = container.mescore ?? 0
+                        var newSpw = container.spscore ?? 0
+                        var newCrw = container.crscore ?? 0
+                        
+                        if newRew < oldRew { newRew = oldRew }
+                        if newCaw < oldCaw { newCaw = oldCaw }
+                        if newInw < oldInw { newInw = oldInw }
+                        if newMew < oldMew { newMew = oldMew }
+                        if newSpw < oldSpw { newSpw = oldSpw }
+                        if newCrw < oldCrw { newCrw = oldCrw }
+                        
+                        let challengeInfo: ChallengeInfo?
+                        if var existInfo = existInfo { //存在则更新。
+                            
+                            existInfo.maxscore = max
+                            existInfo.grade = grade
+                            
+                            existInfo.rewscore = newRew
+                            existInfo.cawscore = newCaw
+                            existInfo.inwscore = newInw
+                            existInfo.mewscore = newMew
+                            existInfo.spwscore = newSpw
+                            existInfo.crwscore = newCrw
+                            
+                            challengeInfo = existInfo.update(with: container)
+                        } else {
+                            challengeInfo = ChallengeInfo(userID: existToken.userID,
+                                                          
+                                                          challengeTime: container.challengeTime,
+                                                          maxscore: max,
+                                                          grade: grade,
+                                                          
+                                                          rewscore: newRew,
+                                                          cawscore: newCaw,
+                                                          inwscore: newInw,
+                                                          mewscore: newMew,
+                                                          spwscore: newSpw,
+                                                          crwscore: newCrw,
+                                                          
+                                                          sex: container.sex,
+                                                          nickName: container.nickName,
+                                                          location: container.location,
+                                                          picName: container.picName)
+                        }
+                        
+                        return (challengeInfo!.save(on: req).flatMap({ (info) in
+                            return try ResponseJSON<Empty>(status: .ok,
+                                                           message: "更新成功").encode(for: req)
+                        }))
+                    })
+            })
+    }
+    
+//    //MARK: 更新用户指定游戏的信息
+//    func updateUserGameInfoHandler(_ req: Request,container: UserGameInfoContainer) throws -> Future<Response> {
+//
+//        let bearToken = BearerAuthorization(token: container.token)
+//        return AccessToken
+//            .authenticate(using: bearToken, on: req)
+//            .flatMap({ (existToken) in
+//                guard let existToken = existToken else {
+//                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+//                }
+//
+//                return UserGameInfo
+//                    .query(on: req)
+//                    .filter(\.userID == existToken.userID)
+//                    .filter(\.gameID == container.gameID)
+//                    .first()
+//                    .flatMap({ (existInfo) in
+//
+//                        let userGameInfo: UserGameInfo?
+//                        if var existInfo = existInfo { //存在则更新。
+//                            userGameInfo = existInfo.update(with: container)
+//                        } else {
+//                            userGameInfo = UserGameInfo(id: nil,
+//                                                          userID: existToken.userID,
+//                                                          gameID: container.gameID,
+//                                                          ispay: container.ispay,
+//                                                          newscore: container.newscore,
+//                                                          maxscore: container.maxscore,
+//                                                          level: container.level,
+//                                                          ranking: nil,
+//                                                          rankingChange: nil,
+//                                                          rescore: container.rescore,
+//                                                          cascore: container.cascore,
+//                                                          inscore: container.inscore,
+//                                                          mescore: container.mescore,
+//                                                          spscore: container.spscore,
+//                                                          crscore: container.crscore)
+//                        }
+//
+//                        return (userGameInfo!.save(on: req).flatMap({ (info) in
+//                            return try ResponseJSON<Empty>(status: .ok,
+//                                                           message: "更新成功").encode(for: req)
+//                        }))
+//                    })
+//            })
+//    }
+    
+    //MARK: 获取游戏列表
     func getGameListHandler(_ req: Request) throws -> Future<Response> {
         
         return GameInfo
@@ -97,7 +364,7 @@ extension GameController {
             })
     }
     
-    //TODO: 获取指定游戏信息
+    //MARK: 获取指定游戏信息
     func getGameInfoHandler(_ req: Request) throws -> Future<Response> {
         
         guard let gameID = req.query[String.self,
@@ -121,7 +388,7 @@ extension GameController {
 
     }
     
-    //TODO: 获取用户游戏信息
+    //MARK: 获取用户游戏信息
     func getUserGameInfoHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self,
@@ -145,7 +412,7 @@ extension GameController {
                     return try ResponseJSON<Empty>(status: .token).encode(for: req)
                 }
                 
-                let first = UserGameInfo
+                let first = ActorInfo
                     .query(on: req)
                     .filter(\.userID == existToken.userID)
                     .filter(\.gameID == gameID)
@@ -156,12 +423,12 @@ extension GameController {
                         return try ResponseJSON<Empty>(status: .error,
                                                        message: "用户游戏信息为空").encode(for: req)
                     }
-                    return try ResponseJSON<UserGameInfo>(data: existInfo).encode(for: req)
+                    return try ResponseJSON<ActorInfo>(data: existInfo).encode(for: req)
                 })
             })
     }
     
-    //TODO: 获取游戏图标
+    //MARK: 获取游戏图标
     func getGameIconHandler(_ req: Request) throws -> Future<Response> {
         
         let name = try req.parameters.next(String.self)
@@ -173,7 +440,7 @@ extension GameController {
         return try req.streamFile(at: path)
     }
     
-    //TODO: 获取游戏封面
+    //MARK: 获取游戏封面
     func getGameCoverHandler(_ req: Request) throws -> Future<Response> {
         
         let name = try req.parameters.next(String.self)
@@ -185,7 +452,7 @@ extension GameController {
         return try req.streamFile(at: path)
     }
     
-    //TODO: 获取指定游戏的排名列表
+    //MARK: 获取指定游戏的排名列表
     func getGameRankingHandler(_ req: Request) throws -> Future<Response> {
         
         guard let gameID = req.query[String.self,
@@ -194,20 +461,20 @@ extension GameController {
                                                                         message: "缺少 gameID 参数").encode(for: req)
         }
         
-        return Actor
+        return ActorInfo
             .query(on: req)
             .filter(\.gameID == gameID)
-            .sort(\.score,.descending) //ascending or descending:升序或降序
+            .sort(\.maxscore,.descending) //ascending or descending:升序或降序
             .all()
             .flatMap({ (actor) in
-                let actorList = actor.compactMap({ Actor -> Actor in
-                    var w = Actor;w.id = nil;return w
+                let actorList = actor.compactMap({ ActorInfo -> ActorInfo in
+                    var w = ActorInfo;w.id = nil;return w
                 })
-                return try ResponseJSON<[Actor]>(data: actorList).encode(for: req)
+                return try ResponseJSON<[ActorInfo]>(data: actorList).encode(for: req)
             })
     }
     
-    //TODO: 获取指定游戏的参与者列表
+    //MARK: 获取指定游戏的参与者列表
     func getGameActorHandler(_ req: Request) throws -> Future<Response> {
         
         guard let gameID = req.query[String.self,
@@ -216,20 +483,20 @@ extension GameController {
                                                                         message: "缺少 gameID 参数").encode(for: req)
         }
         
-        return Actor
+        return ActorInfo
             .query(on: req)
             .filter(\.gameID == gameID)
             .all()
             .flatMap({ (actor) in
-                let actorList = actor.compactMap({ Actor -> Actor in
-                    var w = Actor;w.id = nil;return w
+                let actorList = actor.compactMap({ ActorInfo -> ActorInfo in
+                    var w = ActorInfo;w.id = nil;return w
                 })
-                return try ResponseJSON<[Actor]>(data: actorList).encode(for: req)
+                return try ResponseJSON<[ActorInfo]>(data: actorList).encode(for: req)
             })
     }
     
     
-    //TODO: 获取指定游戏的参与人数
+    //MARK: 获取指定游戏的参与人数
     func getGameJoinHandler(_ req: Request) throws -> Future<Response> {
         
         guard let gameID = req.query[String.self,
@@ -238,7 +505,7 @@ extension GameController {
                                                                         message: "缺少 gameID 参数").encode(for: req)
         }
         
-        return Actor
+        return ActorInfo
             .query(on: req)
             .filter(\.gameID == gameID)
             .all()
@@ -250,67 +517,67 @@ extension GameController {
             })
     }
     
-    //TODO: 更新参与者信息
-    func updateGameActorHandler(_ req: Request,container: ActorContainer) throws -> Future<Response> {
-        
-        let bearToken = BearerAuthorization(token: container.token)
-        return AccessToken
-            .authenticate(using: bearToken, on: req)
-            .flatMap({ (existToken) in
-                guard let existToken = existToken else {
-                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
-                }
-                
-                return Actor
-                    .query(on: req)
-                    .filter(\.userID == existToken.userID)
-                    .filter(\.gameID == container.gameID)
-                    .first()
-                    .flatMap({ (existActor) in
-                        
-                        let actor: Actor?
-                        if var existActor = existActor { //存在则更新。
-                            actor = existActor.update(with: container)
-                        } else {
-                            actor = Actor(userID: existToken.userID,
-                                          gameID: container.gameID,
-                                          score: container.score,
-                                          grade: container.grade,
-                                          sex: container.sex,
-                                          nickName: container.nickName,
-                                          location: container.location,
-                                          picName: container.picName)
-                        }
-                        
-                        return (actor!.save(on: req).flatMap({ (info) in
-                            return try ResponseJSON<Empty>(status: .ok,
-                                                           message: "更新成功").encode(for: req)
-                        }))
-                    })
-            })
-    }
+//    //MARK: 更新参与者信息
+//    func updateGameActorHandler(_ req: Request,container: ActorContainer) throws -> Future<Response> {
+//
+//        let bearToken = BearerAuthorization(token: container.token)
+//        return AccessToken
+//            .authenticate(using: bearToken, on: req)
+//            .flatMap({ (existToken) in
+//                guard let existToken = existToken else {
+//                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+//                }
+//
+//                return Actor
+//                    .query(on: req)
+//                    .filter(\.userID == existToken.userID)
+//                    .filter(\.gameID == container.gameID)
+//                    .first()
+//                    .flatMap({ (existActor) in
+//
+//                        let actor: Actor?
+//                        if var existActor = existActor { //存在则更新。
+//                            actor = existActor.update(with: container)
+//                        } else {
+//                            actor = Actor(userID: existToken.userID,
+//                                          gameID: container.gameID,
+//                                          score: container.score,
+//                                          grade: container.grade,
+//                                          sex: container.sex,
+//                                          nickName: container.nickName,
+//                                          location: container.location,
+//                                          picName: container.picName)
+//                        }
+//
+//                        return (actor!.save(on: req).flatMap({ (info) in
+//                            return try ResponseJSON<Empty>(status: .ok,
+//                                                           message: "更新成功").encode(for: req)
+//                        }))
+//                    })
+//            })
+//    }
     
-    //TODO: 获取全部游戏的当日排名列表
-    func getTodayWorldRankingHandler(_ req: Request) throws -> Future<Response> {
-        
-        let nowDate = Date()
-        let formatter = DateFormatter()
-        formatter.timeZone = NSTimeZone.system
-        formatter.dateFormat = "yyyy-MM-dd"
-        let date = formatter.string(from: nowDate)
-        
-        return Actor
-            .query(on: req)
-            .filter(\.date == date)
-            .sort(\.score,.descending) //ascending or descending:升序或降序
-            .all()
-            .flatMap({ (actor) in
-                let actorList = actor.compactMap({ Actor -> Actor in
-                    var w = Actor;w.id = nil;return w
-                })
-                return try ResponseJSON<[Actor]>(data: actorList).encode(for: req)
-            })
-    }
+//    //MARK: 获取全部游戏的当日排名列表
+//    func getTodayWorldRankingHandler(_ req: Request) throws -> Future<Response> {
+//
+//        let nowDate = Date()
+//        let formatter = DateFormatter()
+//        formatter.timeZone = NSTimeZone.system
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        let date = formatter.string(from: nowDate)
+//
+//        return ActorInfo
+//            .query(on: req)
+//            .filter(\.date == date)
+//            .sort(\.maxscore,.descending) //ascending or descending:升序或降序
+//            .all()
+//            .flatMap({ (actor) in
+//                let actorList = actor.compactMap({ ActorInfo -> ActorInfo in
+//                    var w = ActorInfo;w.id = nil;return w
+//                })
+//                return try ResponseJSON<[ActorInfo]>(data: actorList).encode(for: req)
+//            })
+//    }
     
 }
 
@@ -351,17 +618,67 @@ struct GameInfoContainer: Content {
     
 }
 
-struct UserGameInfoContainer: Content {
+//struct UserGameInfoContainer: Content {
+//
+//    var token: String
+//    var gameID: String
+//
+//    var ispay: Int?
+//
+//    var challengeTime: Int?
+//    var newscore: Int?
+//    var maxscore: Int?
+//    var level: Int?
+//
+//    var rescore: Int?
+//    var cascore: Int?
+//    var inscore: Int?
+//    var mescore: Int?
+//    var spscore: Int?
+//    var crscore: Int?
+//
+//    var date: String?
+//    var time: String?
+//
+//}
+
+//struct ActorContainer: Content {
+//
+//    var token: String
+//    var gameID: String
+//
+//    var score: Int?
+//    var grade: String?
+//
+//    var sex: Int?
+//    var nickName: String?
+//    var location: String?
+//    var picName: String?
+//
+//    var date: String?
+//    var time: String?
+//
+//}
+
+struct ActorInfoContainer: Content {
     
     var token: String
     var gameID: String
     
     var ispay: Int?
     
-    var newscore: Int?
-    var maxscore: Int?
-    
+    var challengeTime: Int?
+    var newscore: Int? //无需用户提交
+    var maxscore: Int? //无需用户提交
+    var grade: String? //无需用户提交
     var level: Int?
+    
+//    var rewscore: Int? //无需用户提交
+//    var cawscore: Int? //无需用户提交
+//    var inwscore: Int? //无需用户提交
+//    var mewscore: Int? //无需用户提交
+//    var spwscore: Int? //无需用户提交
+//    var crwscore: Int? //无需用户提交
     
     var rescore: Int?
     var cascore: Int?
@@ -370,22 +687,37 @@ struct UserGameInfoContainer: Content {
     var spscore: Int?
     var crscore: Int?
     
-}
-
-struct ActorContainer: Content {
-    
-    var token: String
-    var gameID: String
-    
-    var score: Int?
-    var grade: String?
-    
     var sex: Int?
     var nickName: String?
     var location: String?
     var picName: String?
     
-    var date: String?
-    var time: String?
+    var date: String? //无需用户提交
+    var time: String? //无需用户提交
     
+}
+
+struct ChallengeInfoContainer: Content {
+
+    var token:String
+
+    var challengeTime: Int?
+    var maxscore: Int?
+    var grade: String?
+
+    var rewscore: Int? //无需用户提交
+    var cawscore: Int? //无需用户提交
+    var inwscore: Int? //无需用户提交
+    var mewscore: Int? //无需用户提交
+    var spwscore: Int? //无需用户提交
+    var crwscore: Int? //无需用户提交
+
+    var sex: Int?
+    var nickName: String?
+    var location: String?
+    var picName: String?
+
+    var date: String? //无需用户提交
+    var time: String? //无需用户提交
+
 }

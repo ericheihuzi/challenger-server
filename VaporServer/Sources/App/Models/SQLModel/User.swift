@@ -38,12 +38,11 @@ extension User: BasicAuthenticatable {
     static var passwordKey: WritableKeyPath<User, String> = \.password
 }
 
-// 设置唯一键
 extension User {
     static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in
             try addProperties(to: builder)
-            builder.unique(on: \.userID)
+            builder.unique(on: \.userID) // 唯一键
         }
     }
 }

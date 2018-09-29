@@ -18,13 +18,13 @@ struct ChallengeLog: BaseSQLModel {
     
     static var entity: String { return self.name + "s" }
     
-    var score: Int?
-    var time: String?
+    var score: Int
+    var time: String
     
     init(userID: String,
          gameID: String,
         time: String = TimeManager.shared.current(),
-        score: Int?) {
+        score: Int) {
         self.userID = userID
         self.gameID = gameID
         self.time = time

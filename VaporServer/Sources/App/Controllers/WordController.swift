@@ -54,7 +54,7 @@ extension WordController {
         })
     }
     
-    //TODO: 查询单字
+    //MARK: 查询单字
     func filterWordDataHandler(_ req: Request) throws -> Future<Response> {
         
         guard let input = req.query[String.self, at: "str"],input.count > 0 else {
@@ -76,7 +76,7 @@ extension WordController {
         })
     }
     
-    //TODO: 成语查询
+    //MARK: 成语查询
     func filterIdiomHandler(_ req: Request) throws -> Future<Response> {
         
         guard let input = req.query[String.self, at: "str"],input.count > 0 else {
@@ -97,7 +97,7 @@ extension WordController {
         })
     }
     
-    //TODO: 歇后语查询
+    //MARK: 歇后语查询
     func filterXieHouIdiomHandler(_ req: Request) throws -> Future<Response> {
         
         guard let input = req.query[String.self, at: "str"],input.count > 0 else {

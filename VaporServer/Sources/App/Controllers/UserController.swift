@@ -41,7 +41,7 @@ private extension User {
 
 extension UserController {
     
-    //TODO: 登录
+    //MARK: 登录
     func loginUserHandler(_ req: Request,user: User) throws -> Future<Response> {
         
         let first = User
@@ -74,7 +74,7 @@ extension UserController {
         })
     }
     
-    //TODO: 注册
+    //MARK: 注册
     func registerUserHandler(_ req: Request, newUser: User) throws -> Future<Response> {
         
         let futureFirst = User.query(on: req).filter(\.account == newUser.account).first()
@@ -119,7 +119,7 @@ extension UserController {
         }
     }
     
-    //TODO: 退出登录
+    //MARK: 退出登录
     func exitUserHandler(_ req: Request) throws -> Future<Response> {
         
         return try req.content.decode(TokenContainer.self).flatMap({ container in
@@ -141,7 +141,7 @@ extension UserController {
         })
     }
     
-    //TODO: 修改密码
+    //MARK: 修改密码
     private func changePasswordHandler(_ req: Request,inputContent: PasswordContainer) throws -> Future<Response> {
         return User.query(on: req).filter(\.account == inputContent.account).first().flatMap({ (existUser) in
             
@@ -172,7 +172,7 @@ extension UserController {
         })
     }
     
-    //TODO: 获取用户信息
+    //MARK: 获取用户信息
     func getUserInfoHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self,
@@ -205,7 +205,7 @@ extension UserController {
         })
     }
     
-    //TODO: 获取头像
+    //MARK: 获取头像
     func getUserAvatarHandler(_ req: Request) throws -> Future<Response> {
         
         let name = try req.parameters.next(String.self)
@@ -218,7 +218,7 @@ extension UserController {
         return try req.streamFile(at: path)
     }
     
-    //TODO: 更新用户信息
+    //MARK: 更新用户信息
     func updateUserInfoHandler(_ req: Request,container: UserInfoContainer) throws -> Future<Response> {
         
         let bearToken = BearerAuthorization(token: container.token)

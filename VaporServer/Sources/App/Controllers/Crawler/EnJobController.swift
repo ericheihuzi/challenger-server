@@ -33,7 +33,7 @@ class EnJobController: RouteCollection {
 }
 
 
-//TODO: API
+//MARK: API
 extension EnJobController {
     
     // my apply list
@@ -120,7 +120,7 @@ private struct ApplyContext: Content {
     
 }
 
-//TODO: Crawler
+//MARK: Crawler
 extension EnJobController {
     
     func startParseJobHandler(_ req: Request) throws -> Future<Response> {
