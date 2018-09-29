@@ -27,8 +27,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     try routes(router)
     services.register(router, as: Router.self)
     
-    let myService = NIOServerConfig.default(port: 8030)
-    services.register(myService)
+//    let myService = NIOServerConfig.default(port: 8030)
+//    services.register(myService)
 
     /* * ** ** ** ** *** ** ** ** Middleware ** ** ** ** ** ** ** ** ** */
     var middlewares = MiddlewareConfig()

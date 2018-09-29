@@ -13,11 +13,11 @@ extension PostgreSQLDatabaseConfig {
     
     static func loadSQLConfig(_ env: Environment) -> PostgreSQLDatabaseConfig {
         
-        let database = env.isRelease ? "vaporDB":"vaporDebugDB"
+        let database = "vaporDB"
         
-        var hostname = "127.0.0.1"
+        var hostname = "172.27.100.3"
         var username = "vapor"
-        var password = "123456"
+        var password = "zjh@xlj1314!"
         var port = 5432
         
         #if os(Linux)
