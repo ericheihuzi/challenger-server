@@ -13,7 +13,7 @@ extension PostgreSQLDatabaseConfig {
     
     static func loadSQLConfig(_ env: Environment) -> PostgreSQLDatabaseConfig {
         
-        let database = "vaporDB"
+        let database = "postgres-k1q8fff2"
         
         var hostname = "172.27.100.3"
         var username = "vapor"
