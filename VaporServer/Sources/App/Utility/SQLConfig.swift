@@ -20,7 +20,7 @@ extension PostgreSQLDatabaseConfig {
 //                var password = "123456"
 //                var port = 5432
         
-        let database = "vaporDB"
+        let database = "vapordb"
 
         var hostname = "0.0.0.0"
         var username = "vapor"
