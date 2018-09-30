@@ -43,3 +43,59 @@ extension GameInfo {
     }
 }
 
+extension GameInfo {
+    
+    mutating func update(with container: GameInfoContainer) -> GameInfo {
+        
+        if let new = container.title {
+            self.title = new
+        }
+        
+//        if let new = container.iconName {
+//            self.iconName = new
+//        }
+//        if let new = container.coverName {
+//            self.coverName = new
+//        }
+        
+        if let new = container.price {
+            self.price = new
+        }
+        if let new = container.category {
+            self.category = new
+        }
+        
+        if let new = container.level {
+            self.level = new
+        }
+        if let new = container.round {
+            self.round = new
+        }
+        if let new = container.color {
+            self.color = new
+        }
+        
+        if let new = container.rescore {
+            self.rescore = new
+        }
+        if let new = container.inscore {
+            self.inscore = new
+        }
+        if let new = container.cascore {
+            self.cascore = new
+        }
+        if let new = container.mescore {
+            self.mescore = new
+        }
+        if let new = container.spscore {
+            self.spscore = new
+        }
+        if let new = container.crscore {
+            self.crscore = new
+        }
+        
+        return self
+    }
+    
+}
+
