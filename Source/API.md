@@ -2,7 +2,7 @@
 
 ## API Instructions
 
-以下是一些基本的 API 使用用例及说明。
+以下是 API 使用用例及说明。
 
 [User / 用户](API.md/#用户)
 
