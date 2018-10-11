@@ -44,8 +44,7 @@ extension ChallengeController {
 
         guard let token = req.query[String.self,
                                     at: "token"] else {
-                                        return try ResponseJSON<Empty>(status: .error,
-                                                                       message: "缺少 token 参数").encode(for: req)
+                                        return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
         }
 
         let bearToken = BearerAuthorization(token: token)
@@ -77,8 +76,7 @@ extension ChallengeController {
         
         guard let token = req.query[String.self,
                                     at: "token"] else {
-                                        return try ResponseJSON<Empty>(status: .error,
-                                                                       message: "缺少 token 参数").encode(for: req)
+                                        return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
         }
         
         let bearToken = BearerAuthorization(token: token)
@@ -110,14 +108,13 @@ extension ChallengeController {
         
         guard let token = req.query[String.self,
                                     at: "token"] else {
-                                        return try ResponseJSON<Empty>(status: .error,
-                                                                       message: "缺少 token 参数").encode(for: req)
+                                        return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
         }
         
         guard let gameID = req.query[String.self,
                                      at: "gameID"] else {
                                         return try ResponseJSON<Empty> (status: .error,
-                                                                        message: "缺少 gameID 参数").encode(for: req)
+                                                                        message: "Missing `token` parameter").encode(for: req)
         }
         
         let bearToken = BearerAuthorization(token: token)
@@ -194,7 +191,7 @@ extension ChallengeController {
 //
 //                        return (challengeInfo!.save(on: req).flatMap({ (info) in
 //                            return try ResponseJSON<Empty>(status: .ok,
-//                                                           message: "更新成功").encode(for: req)
+//                                                           message: "Updated successfully!").encode(for: req)
 //                        }))
 //                    })
 //            })
@@ -224,7 +221,7 @@ extension ChallengeController {
 //
 //                        return (challengeLog!.save(on: req).flatMap({ (info) in
 //                            return try ResponseJSON<Empty>(status: .ok,
-//                                                           message: "更新成功").encode(for: req)
+//                                                           message: "Updated successfully!").encode(for: req)
 //                        }))
 //                    })
 //            })

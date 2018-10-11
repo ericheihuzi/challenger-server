@@ -10,39 +10,36 @@ import Vapor
 import Fluent
 import Random
 
-// 这里是测试 controller 
+// 这里是测试 controller
 struct TestController: RouteCollection {
     
     func boot(router: Router) throws {
         
         router.group("test") { (group) in
             
-            //localhost:8080/test/upload
-            group.post("upload", use: uploadImage)
-            
+            // Get
             group.get("getName", use: getNameHandler)
-            
             group.get("getName2", String.parameter) { req -> [String:String] in
                 let name = try req.parameters.next(String.self)
                 return ["status":"0","message":"Hello,\(name) !"]
             }
+            group.get("doc", use: sendGetRequest)
+            group.get("random", use: testRandom)
+            group.get("tofu", use: testTofuHandler)
+            group.get("myModel", use: saveMyModelHandler)
+            
+            
+            // Post
             group.post("post1UserInfo", use: post1UserInfoHandler)
             group.post(UserContainer.self, at: "post2UserInfo", use: post2UserInfoHandler)
-            
-            group.get("doc", use: sendGetRequest)
-            
-            group.get("random", use: testRandom)
-            
+            //localhost:8080/test/upload
+            group.post("upload", use: uploadImage)
             group.post("postCity", use: postCityHandler)
             
             group.post("send") { req -> Future<Response> in
                 let city: String = try req.content.syncGet(at: "city")
                 return try ["hello":city].encode(for: req)
             }
-            
-            group.get("tofu", use: testTofuHandler)
-            
-            group.get("myModel", use: saveMyModelHandler)
             
         }
         
@@ -81,7 +78,7 @@ extension TestController {
         
         let b3 = Bill(id: "se398", category: 1, tags: "冰箱", place: "新街口", introduce: "买冰箱", describe: "带老婆买了个大冰箱", amount: 8999, status: 0, remark: "家具支出", creatTime: TimeManager.current(), memberId: "3339", tradeType: 1)
         
-        let b4 = Bill(id: "se335", category: 1, tags: "外快", place: "家里", introduce: "小项目", describe: "大概为期7天写的基于 Swift 服务端的跑步项目", amount: 5000, status: 0, remark: "外快收入", creatTime: TimeManager.current(), memberId: "3339", tradeType: 2)
+        let b4 = Bill(id: "se335", category: 1, tags: "外快", place: "家里", introduce: "小项目", describe: "大概为期7天写的跑步项目", amount: 5000, status: 0, remark: "外快收入", creatTime: TimeManager.current(), memberId: "3339", tradeType: 2)
         
         return try ResponseJSON<[Bill]>(data: [b1,b2,b3,b4]).encode(for: req)
     }
@@ -144,14 +141,13 @@ extension TestController {
         return client
             .get("http://api.jinxiansen.com")
             .map(to: String.self, { clientResponse in
-            return clientResponse.utf8String
-        })
+                return clientResponse.utf8String
+            })
     }
-    
     
     func getNameHandler(_ req: Request) throws -> [String:String] {
         guard let name = req.query[String.self, at: "name"] else {
-            return ["status":"-1","message": "缺少 name 参数"]
+            return ["status":"-1","message": "Missing `name` parameter"]
         }
         return ["status":"0","message":"Hello,\(name) !"]
     }
@@ -181,8 +177,7 @@ extension TestController {
             let path = try VaporUtils.localRootDir(at: ImagePath.record, req: req) + "/" + VaporUtils.imageName()
             if let image = receive.image {
                 guard image.count < ImageMaxByteSize else {
-                    return try ResponseJSON<Empty>(status: .error,
-                                                   message: "有点大，得压缩！").encode(for: req)
+                    return try ResponseJSON<Empty>(status: .pictureTooBig).encode(for: req)
                 }
                 try Data(image).write(to: URL(fileURLWithPath: path))
             }
@@ -192,7 +187,6 @@ extension TestController {
     }
     
 }
-
 
 
 private struct ImageContainer: Content {

@@ -59,7 +59,7 @@ extension RecordController {
                 let path = try VaporUtils.localRootDir(at: ImagePath.record,
                                                        req: req) + "/" + imgName!
                 guard image.data.count < ImageMaxByteSize else {
-                    return try ResponseJSON<Empty>(status: .error,message: "有点大，得压缩！").encode(for: req)
+                    return try ResponseJSON<Empty>(status: .pictureTooBig).encode(for: req)
                 }
                 try Data(image.data).write(to: URL(fileURLWithPath: path))
             }
@@ -74,7 +74,7 @@ extension RecordController {
             
             return record.save(on: req).flatMap({ (rc) in
                 return try ResponseJSON<Record>(status: .ok,
-                                                    message: "发布成功").encode(for: req)
+                                                    message: "Successfully released!").encode(for: req)
             })
         })
     }
@@ -85,7 +85,7 @@ extension RecordController {
         guard let county = req.query[String.self,
                                      at: "county"],county.count > 0 else {
             return try ResponseJSON<Empty>(status: .error,
-                                           message: "缺少 county 参数").encode(for: req)
+                                           message: "Missing `county` parameter").encode(for: req)
         }
         
         let futureAll = Record.query(on: req).filter(\.county == county).query(page: req.page).all()
@@ -93,7 +93,7 @@ extension RecordController {
         return futureAll.flatMap({ (cords) in
                 guard cords.count > 0 else {
                     return try ResponseJSON<[Record]>(status: .ok,
-                                                      message: "没有数据了",
+                                                      message: "There's no more data.",
                                                       data: []).encode(for: req)
                 }
                 return try ResponseJSON<[Record]>(data: cords).encode(for: req)
@@ -106,14 +106,14 @@ extension RecordController {
         guard let name = req.query[String.self,
                                    at: "name"] else {
             let json = ResponseJSON<Empty>(status: .error,
-                                           message: "缺少图片参数")
+                                           message: "Missing picture `name` parameter")
             return try json.encode(for: req)
         }
         
         let path = try VaporUtils.localRootDir(at: ImagePath.record, req: req) + "/" + name
         if !FileManager.default.fileExists(atPath: path) {
             let json = ResponseJSON<Empty>(status: .error,
-                                           message: "图片不存在")
+                                           message: "Image does not exist")
             return try json.encode(for: req)
         }
         return try req.streamFile(at: path)
@@ -125,7 +125,7 @@ extension RecordController {
         let path = try VaporUtils.localRootDir(at: ImagePath.record, req: req) + "/" + name
         if !FileManager.default.fileExists(atPath: path) {
             let json = ResponseJSON<Empty>(status: .error,
-                                           message: "图片不存在")
+                                           message: "Image does not exist")
             return try json.encode(for: req)
         }
         return try req.streamFile(at: path)
@@ -145,8 +145,7 @@ extension RecordController {
                 var imgName: String?
                 if let file = container.image {
                     guard file.data.count < ImageMaxByteSize else {
-                        return try ResponseJSON<Empty>(status: .error,
-                                                      message: "图片过大，得压缩！").encode(for: req)
+                        return try ResponseJSON<Empty>(status: .pictureTooBig).encode(for: req)
                     }
                     imgName = try VaporUtils.imageName()
                     let path = try VaporUtils.localRootDir(at: ImagePath.report, req: req) + "/" + imgName!
@@ -163,7 +162,7 @@ extension RecordController {
                 
                 return report.save(on: req).flatMap({ (rc) in
                     return try ResponseJSON<Empty>(status: .ok,
-                                                   message: "举报成功").encode(for: req)
+                                                   message: "Report success!").encode(for: req)
                 })
             })
     }
@@ -172,12 +171,11 @@ extension RecordController {
     func getMyRecordsHandler(_ req: Request) throws -> Future<Response> {
         
         guard let token = req.query[String.self, at: "token"] else {
-            return try ResponseJSON<Empty>(status: .error,
-                                           message: "缺少 token 参数").encode(for: req)
+            return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
         }
         guard let county = req.query[String.self, at: "county"] else {
             return try ResponseJSON<Empty>(status: .error,
-                                           message: "缺少 county 参数").encode(for: req)
+                                           message: "Missing `county` parameter").encode(for: req)
         }
 
         let bear = BearerAuthorization(token: token)

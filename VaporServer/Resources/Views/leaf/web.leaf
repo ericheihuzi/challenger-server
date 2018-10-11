@@ -334,9 +334,7 @@ kbd {
 
 <p>这是基于 <a href="https://swift.org">Swift 4.1</a> 和 <a href="http://vapor.codes">Vapor 3</a> 框架的 Swift 服务端项目。</p>
 
-<p>开源在：<a href="https://github.com/Jinxiansen/SwiftServerSide-Vapor">https://github.com/Jinxiansen/SwiftServerSide-Vapor</a></p>
-
-<h5 id="toc_0">项目部署在 <a href="http://api.jinxiansen.com">http://api.jinxiansen.com</a> ，大部分 API 可直接在此进行调试。</h5>
+<h5 id="toc_0">项目部署在 <a href="http://api.iqchallenge.cn/">http://api.iqchallenge.cn/</a></h5>
 
 <p>这里是本项目的 API 和说明：</p>
 
@@ -346,22 +344,22 @@ kbd {
 
 <ul>
 <li>完整登录、注册、修改密码、退出功能；</li>
-<li>发送个人动态、获取动态列表，获取动态图片、举报；</li>
-<li>汉字、成语、歇后语查询；</li>
-<li>爬虫示例：爬取 拉勾网 iOS 职位信息，获取爬取结果；</li>
-<li>小说爬取示例：凡人修仙传；</li>
+<li>更新、添加、获取游戏相关信息；</li>
+<li>更新、获取挑战者信息及挑战记录；</li>
+<li>获取游戏排名；</li>
 <li><strong>Python</strong> 交互：<code>Swift</code> 调用 本地 <code>Python(.py)</code> 带参交互示例；</li>
 <li>邮件发送示例；</li>
 <li>HTML 展示示例。</li>
 </ul>
 
-<p><a href="#%E7%94%A8%E6%88%B7">用户相关</a></p>
+<p><a href="#%E7%94%A8%E6%88%B7%E7%9B%B8%E5%85%B3">用户相关</a></p>
 
 <ul>
 <li><a href="#%E6%B3%A8%E5%86%8C">注册</a></li>
 <li><a href="#%E7%99%BB%E5%BD%95">登录</a></li>
 <li><a href="#%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81">修改密码</a></li>
 <li><a href="#%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF">获取用户信息</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E5%A4%B4%E5%83%8F">获取头像</a></li>
 <li><a href="#%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF">修改用户信息</a></li>
 <li><a href="#%E9%80%80%E5%87%BA%E7%99%BB%E5%BD%95">退出登录</a></li>
 </ul>
@@ -376,22 +374,28 @@ kbd {
 <li><a href="#%E4%B8%BE%E6%8A%A5">举报</a></li>
 </ul>
 
-<p><a href="#%E5%AD%97%E5%85%B8">字典</a></p>
+<p><a href="#%E6%B8%B8%E6%88%8F%E7%9B%B8%E5%85%B3">游戏相关</a></p>
 
 <ul>
-<li><a href="#%E6%B1%89%E5%AD%97%E6%9F%A5%E8%AF%A2">汉字查询</a></li>
-<li><a href="#%E6%88%90%E8%AF%AD%E6%9F%A5%E8%AF%A2">成语查询</a></li>
-<li><a href="#%E6%AD%87%E5%90%8E%E8%AF%AD%E6%9F%A5%E8%AF%A2">歇后语查询</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF">获取指定游戏信息</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%B8%B8%E6%88%8F%E5%9B%BE%E6%A0%87">获取游戏图标</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%B8%B8%E6%88%8F%E5%B0%81%E9%9D%A2">获取游戏封面</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%B8%B8%E6%88%8F%E5%88%97%E8%A1%A8">获取游戏列表</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E5%8F%82%E4%B8%8E%E8%80%85%E5%88%97%E8%A1%A8">获取指定游戏参与者列表</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E5%8F%82%E4%B8%8E%E4%BA%BA%E6%95%B0">获取指定游戏参与人数</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E6%8E%92%E5%90%8D%E5%88%97%E8%A1%A8">获取指定游戏排名列表</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E7%9A%84%E4%BF%A1%E6%81%AF">获取用户指定游戏的信息</a></li>
+<li><a href="#%E6%9B%B4%E6%96%B0%E5%8F%82%E4%B8%8E%E8%80%85%E4%BF%A1%E6%81%AF">更新参与者信息</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E4%BB%8A%E6%97%A5%E6%8E%92%E5%90%8D%E5%88%97%E8%A1%A8">获取今日排名列表</a></li>
+<li><a href="#%E6%9B%B4%E6%96%B0%E3%80%81%E6%B7%BB%E5%8A%A0%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF">更新、添加指定游戏信息</a></li>
 </ul>
 
-<p>爬虫相关</p>
+<p><a href="#%E6%8C%91%E6%88%98%E7%9B%B8%E5%85%B3">挑战相关</a></p>
 
 <ul>
-<li><a href="#%E6%8B%89%E5%8B%BEiOS">拉勾 iOS</a></li>
-<li><a href="#%E8%8E%B7%E5%8F%96iOS%E7%88%AC%E5%8F%96%E7%BB%93%E6%9E%9C">获取拉勾iOS爬取结果</a></li>
-<li><a href="#%E7%88%AC%E8%99%AB%E7%A4%BA%E4%BE%8B">爬虫示例</a></li>
-<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%88%AC%E8%99%AB">自定义爬虫示例</a></li>
-<li>...</li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%91%E6%88%98%E4%BF%A1%E6%81%AF">获取挑战信息</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E6%8C%91%E6%88%98%E8%AE%B0%E5%BD%95">获取指定游戏挑战记录</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%91%E6%88%98%E8%AE%B0%E5%BD%95">获取挑战记录</a></li>
 </ul>
 
 <p><a href="#%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6">其他</a></p>
@@ -404,7 +408,7 @@ kbd {
 
 <p>建议配合使用 <a href="https://www.getpostman.com/apps">Postman</a> 进行调试。</p>
 
-<h2 id="用户">用户</h2>
+<h2 id="用户相关">用户相关</h2>
 
 <p>用户相关接口包括登录、注册、修改密码、退出登录。</p>
 
@@ -1413,23 +1417,27 @@ kbd {
     &quot;message&quot;: &quot;举报成功&quot;
 }</code></pre></div>
 
-<h2 id="字典">字典</h2>
+<h2 id="游戏相关">游戏相关</h2>
 
-<p>支持汉字、成语、歇后语查询。</p>
-
-<blockquote>
-<p>查询采用的是模糊匹配，可能会有多个结果。</p>
-</blockquote>
-
-<h3 id="汉字查询">汉字查询</h3>
+<p>说明</p>
 
 <blockquote>
-<p>words/word</p>
+<p>描述</p>
 </blockquote>
 
-<h5 id="toc_52">请求方式：GET</h5>
+<h3 id="获取指定游戏信息">获取指定游戏信息</h3>
 
-<h5 id="toc_53">请求参数</h5>
+<blockquote>
+<p>games/getGameInfo</p>
+</blockquote>
+
+<h5 id="toc_67">请求方式：GET</h5>
+
+<blockquote>
+<p>示例: games/getGameInfo?gameID=RE-0001</p>
+</blockquote>
+
+<h5 id="toc_68">请求参数</h5>
 
 <table>
 <thead>
@@ -1443,15 +1451,15 @@ kbd {
 
 <tbody>
 <tr>
-<td style="text-align: left">str</td>
+<td style="text-align: left">gameID</td>
 <td style="text-align: left">是</td>
 <td style="text-align: left">string</td>
-<td style="text-align: left">查询的汉字</td>
+<td style="text-align: left">游戏ID</td>
 </tr>
 </tbody>
 </table>
 
-<h4 id="toc_54">返回字段</h4>
+<h4 id="toc_69">返回字段</h4>
 
 <table>
 <thead>
@@ -1464,122 +1472,10 @@ kbd {
 
 <tbody>
 <tr>
-<td style="text-align: left">status</td>
-<td style="text-align: left">int</td>
-<td style="text-align: left">0 = 请求成功</td>
+<td style="text-align: left">data</td>
+<td style="text-align: left">查看`返回示例`</td>
+<td style="text-align: left">游戏信息</td>
 </tr>
-<tr>
-<td style="text-align: left">message</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">描述</td>
-</tr>
-<tr>
-<td style="text-align: left">pinyin</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">汉字对应的拼音</td>
-</tr>
-<tr>
-<td style="text-align: left">word</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">查询的汉字</td>
-</tr>
-<tr>
-<td style="text-align: left">explanation</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">释义</td>
-</tr>
-<tr>
-<td style="text-align: left">strokes</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">笔画</td>
-</tr>
-<tr>
-<td style="text-align: left">radicals</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">偏旁</td>
-</tr>
-<tr>
-<td style="text-align: left">oldword</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">繁体字</td>
-</tr>
-<tr>
-<td style="text-align: left">more</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">更多解释、拓展</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_55">接口示例</h4>
-
-<p><a href="http://api.jinxiansen.com/words/word?str=%E4%B8%AD">http://api.jinxiansen.com/words/word?str=中</a></p>
-
-<h4 id="toc_56">返回示例</h4>
-
-<div><pre><code class="language-none">{
-    &quot;status&quot;: 0,
-    &quot;data&quot;: [
-        {
-            &quot;pinyin&quot;: &quot;zhōnɡ&quot;,
-            &quot;word&quot;: &quot;中&quot;,
-            &quot;explanation&quot;: &quot;中 \n\n (指事。甲骨文字形,中象旗杆,上下有旌旗和飘带,旗杆正中竖立。本义中心 ----- 此处省略一大段 ------ ③在某个方面占重要位置的地方政治～心。商贸～心。&quot;,
-            &quot;strokes&quot;: &quot;4&quot;,
-            &quot;radicals&quot;: &quot;丨&quot;,
-            &quot;oldword&quot;: &quot;中&quot;,
-            &quot;more&quot;: &quot;中 zhong 部首 丨 部首笔画 01 总笔画 04  中 ----- 此处省略一大段 ------。\n郑码j/jivv，u4e2d，gbkd6d0\n笔画数4，部首丨，笔顺编号2512&quot;
-        }
-    ],
-    &quot;message&quot;: &quot;请求成功&quot;
-}
- </code></pre></div>
-
-<h3 id="成语查询">成语查询</h3>
-
-<blockquote>
-<p>words/idiom</p>
-</blockquote>
-
-<h5 id="toc_57">请求方式：GET</h5>
-
-<h4 id="toc_58">接口示例</h4>
-
-<p><a href="http://api.jinxiansen.com/words/idiom?str=%E6%B0%B4%E6%80%A7">http://api.jinxiansen.com/words/idiom?str=水性</a></p>
-
-<h5 id="toc_59">请求参数</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">参数</th>
-<th style="text-align: left">必选</th>
-<th style="text-align: left">类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">str</td>
-<td style="text-align: left">是</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">查询的成语</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_60">返回字段</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">返回字段</th>
-<th style="text-align: left">字段类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
 <tr>
 <td style="text-align: left">status</td>
 <td style="text-align: left">int</td>
@@ -1590,155 +1486,34 @@ kbd {
 <td style="text-align: left">string</td>
 <td style="text-align: left">描述</td>
 </tr>
-<tr>
-<td style="text-align: left">example</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">举例</td>
-</tr>
-<tr>
-<td style="text-align: left">pinyin</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">拼音</td>
-</tr>
-<tr>
-<td style="text-align: left">word</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">查询的成语</td>
-</tr>
-<tr>
-<td style="text-align: left">abbreviation</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">拼音缩写</td>
-</tr>
-<tr>
-<td style="text-align: left">derivation</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">来源</td>
-</tr>
-<tr>
-<td style="text-align: left">explanation</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">解释</td>
-</tr>
 </tbody>
 </table>
 
-<h4 id="toc_61">返回示例</h4>
+<h4 id="toc_70">返回示例</h4>
 
 <div><pre><code class="language-none">{
-    &quot;status&quot;: 0,
-    &quot;data&quot;: [
-        {
-            &quot;example&quot;: &quot;无&quot;,
-            &quot;pinyin&quot;: &quot;shuǐ xìng yáng huā&quot;,
-            &quot;word&quot;: &quot;水性杨花&quot;,
-            &quot;abbreviation&quot;: &quot;sxyh&quot;,
-            &quot;derivation&quot;: &quot;清·曹雪芹《红楼梦》第九十二回大凡女人都是水性杨花。”&quot;,
-            &quot;explanation&quot;: &quot;象流水那样易变，象杨花那样轻飘。比喻妇女在感情上不专一。&quot;
-        },
-        {
-            &quot;example&quot;: &quot;无&quot;,
-            &quot;pinyin&quot;: &quot;yáng hu huǐ xìng&quot;,
-            &quot;word&quot;: &quot;杨花水性&quot;,
-            &quot;abbreviation&quot;: &quot;yhhx&quot;,
-            &quot;derivation&quot;: &quot;清·李宝嘉《官场现形记》第四十三回不过瞿耐庵惧内得很，一直不敢接他上任。那爱珠又是堂子里出身，杨花水性。”&quot;,
-            &quot;explanation&quot;: &quot;柳絮飘扬，水性流动，因以杨花水性”比喻轻薄女子等用情不专。&quot;
-        },
-        {
-            &quot;example&quot;: &quot;无&quot;,
-            &quot;pinyin&quot;: &quot;yún xīn shuǐ xìng&quot;,
-            &quot;word&quot;: &quot;云心水性&quot;,
-            &quot;abbreviation&quot;: &quot;yxsx&quot;,
-            &quot;derivation&quot;: &quot;明·叶宪祖《鸾鎞记·喜谐》若是云心水性情分寡，怎供出梦蝶寻花。”&quot;,
-            &quot;explanation&quot;: &quot;指女子作风轻浮，爱情不专一。&quot;
-        }
-    ],
-    &quot;message&quot;: &quot;请求成功&quot;
+    "data": {
+        "iconName": "9ab6447cb2cbe2ceccdbce2bb6daf7eb.jpg",
+        "crscore": 80,
+        "rescore": 200,
+        "color": "#FFC643FB",
+        "inscore": 180,
+        "spscore": 40,
+        "id": 3,
+        "coverName": "6fcebc1c3edc4c1219adbca78e895d64.jpg",
+        "price": 0,
+        "gameID": "RE-0001",
+        "title": "图形逻辑",
+        "cascore": 130,
+        "category": "reasoning",
+        "round": 20,
+        "mescore": 100,
+        "level": 20
+    },
+    "status": 0,
+    "message": "请求成功"
 }
- </code></pre></div>
-
-<h3 id="歇后语查询">歇后语查询</h3>
-
-<blockquote>
-<p>words/xxidiom</p>
-</blockquote>
-
-<h5 id="toc_62">请求方式：GET</h5>
-
-<h4 id="toc_63">接口示例</h4>
-
-<p><a href="http://api.jinxiansen.com/words/xxidiom?str=%E8%8F%A9%E8%90%A8">http://api.jinxiansen.com/words/xxidiom?str=菩萨</a></p>
-
-<h5 id="toc_64">请求参数</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">参数</th>
-<th style="text-align: left">必选</th>
-<th style="text-align: left">类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">str</td>
-<td style="text-align: left">是</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">查询的成语</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_65">返回字段</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">返回字段</th>
-<th style="text-align: left">字段类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">status</td>
-<td style="text-align: left">int</td>
-<td style="text-align: left">0 = 请求成功</td>
-</tr>
-<tr>
-<td style="text-align: left">message</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">描述</td>
-</tr>
-<tr>
-<td style="text-align: left">riddle</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">前半句</td>
-</tr>
-<tr>
-<td style="text-align: left">answer</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">后半句</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_66">返回示例</h4>
-
-<div><pre><code class="language-none">{
-    &quot;status&quot;: 0,
-    &quot;data&quot;: [
-        {
-            &quot;riddle&quot;: &quot;泥菩萨过河&quot;,
-            &quot;answer&quot;: &quot;自身难保&quot;
-        }
-    ],
-    &quot;message&quot;: &quot;请求成功&quot;
-}
- </code></pre></div>
+</code></pre></div>
 
 <h2 id="发送邮件">发送邮件</h2>
 
@@ -1820,358 +1595,6 @@ kbd {
 <div><pre><code class="language-none">{
     &quot;status&quot;: 0,
     &quot;message&quot;: &quot;发送成功&quot;
-}
- </code></pre></div>
-
-<h2 id="爬虫">爬虫</h2>
-
-<p>这里只是简单展示了如何解析URL，你可以在此基础扩展使用，爬取目标URL并解析和创建 SQL Model 保存数据库，然后添加 API 调用，美滋滋。☺️</p>
-
-<h3 id="拉勾iOS">拉勾网iOS爬取示例</h3>
-
-<p>拉勾网爬虫示例，目标地址： <a href="https://www.lagou.com/jobs/list_ios?labelWords=&amp;fromSearch=true&amp;suginput=">https://www.lagou.com/jobs/list_ios?labelWords=&amp;fromSearch=true&amp;suginput=</a></p>
-
-<blockquote>
-<p>lagou/start</p>
-</blockquote>
-
-<h5 id="toc_71">请求方式：GET</h5>
-
-<h4 id="toc_72">接口示例</h4>
-
-<p>请运行项目后开始爬取：<a href="http://localhost:8080/lagou/start">http://localhost:8080/lagou/start</a></p>
-
-<p><details> 
-  <summary> 查看爬取结果 </summary>
-    http://api.jinxiansen.com/lagou/ios</p>
-
-<p></details> </p>
-
-<h5 id="toc_73">请求参数</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">参数</th>
-<th style="text-align: left">必选</th>
-<th style="text-align: left">类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">无</td>
-<td style="text-align: left"></td>
-<td style="text-align: left"></td>
-<td style="text-align: left"></td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_74">返回字段</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">返回字段</th>
-<th style="text-align: left">字段类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">status</td>
-<td style="text-align: left">int</td>
-<td style="text-align: left">0 = 请求成功</td>
-</tr>
-<tr>
-<td style="text-align: left">message</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">描述</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_75">返回示例</h4>
-
-<p>你可以修改项目中的城市和关键字，以爬取自己需要的数据。</p>
-
-<div><pre><code class="language-none">{
-    &quot;status&quot;:0,
-    &quot;message&quot;:&quot;开始爬取任务：上海 ios&quot;
-}</code></pre></div>
-
-<h3 id="获取iOS爬取结果">获取iOS爬取结果</h3>
-
-<blockquote>
-<p>lagou/ios</p>
-</blockquote>
-
-<h5 id="toc_76">请求方式：GET</h5>
-
-<h4 id="toc_77">接口示例</h4>
-
-<p><a href="http://api.jinxiansen.com/lagou/ios">http://api.jinxiansen.com/lagou/ios</a></p>
-
-<h5 id="toc_78">请求参数</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">参数</th>
-<th style="text-align: left">必选</th>
-<th style="text-align: left">类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">无</td>
-<td style="text-align: left"></td>
-<td style="text-align: left"></td>
-<td style="text-align: left"></td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_79">返回字段</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">返回字段</th>
-<th style="text-align: left">字段类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">status</td>
-<td style="text-align: left">int</td>
-<td style="text-align: left">0 = 请求成功</td>
-</tr>
-<tr>
-<td style="text-align: left">message</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">描述</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_80">返回示例</h4>
-
-<div><pre><code class="language-none">{
-    &quot;status&quot;:0,
-    &quot;message&quot;:&quot;请求成功&quot;,
-    &quot;data&quot;:[
-        {
-            &quot;industryField&quot;:&quot;移动互联网,金融&quot;,
-            &quot;firstType&quot;:&quot;开发/测试/运维类&quot;,
-            &quot;positionAdvantage&quot;:&quot;亿级平台,准上市,极客文化,比较&quot;,
-            &quot;id&quot;:1,
-            &quot;education&quot;:&quot;本科&quot;,
-            &quot;imState&quot;:&quot;today&quot;,
-            &quot;workYear&quot;:&quot;3-5年&quot;,
-            &quot;secondType&quot;:&quot;前端开发/移动开发&quot;,
-            &quot;appShow&quot;:0,
-            &quot;address&quot;:&quot;上海 - 徐汇区 - 桂平路391号新漕河泾国际商务中心A座5层 &quot;,
-            &quot;adWord&quot;:0,
-            &quot;resumeProcessDay&quot;:1,
-            &quot;companySize&quot;:&quot;500-2000人&quot;,
-            &quot;salary&quot;:&quot;15k-25k&quot;,
-            &quot;score&quot;:0,
-            &quot;subwayline&quot;:&quot;9号线&quot;,
-            &quot;district&quot;:&quot;徐汇区&quot;,
-            &quot;tag&quot;:&quot;15k-25k /上海 / 经验3-5年 / 本科及以上 / 全职 高级 中级 移动端 iOS Android 09:13 发布于拉勾网&quot;,
-            &quot;formatCreateTime&quot;:&quot;09:13发布&quot;,
-            &quot;stationname&quot;:&quot;东兰路&quot;,
-            &quot;pcShow&quot;:0,
-            &quot;resumeProcessRate&quot;:100,
-            &quot;approve&quot;:1,
-            &quot;longitude&quot;:&quot;121.40391&quot;,
-            &quot;positionId&quot;:4806768,
-            &quot;city&quot;:&quot;上海&quot;,
-            &quot;companyId&quot;:1738,
-            &quot;positionName&quot;:&quot;ios开发&quot;,
-            &quot;publisherId&quot;:105490,
-            &quot;isSchoolJob&quot;:0,
-            &quot;companyShortName&quot;:&quot;有鱼金融科技&quot;,
-            &quot;financeStage&quot;:&quot;不需要融资&quot;,
-            &quot;companyLogo&quot;:&quot;i/image/M00/61/D3/CgqKkVf8uQeAOqJ2AAArfl5skXY149.png&quot;,
-            &quot;companyFullName&quot;:&quot;上海彩亿信息技术有限公司&quot;,
-            &quot;lastLogin&quot;:1530686988000,
-            &quot;createTime&quot;:&quot;2018-07-04 09:13:17&quot;,
-            &quot;jobNature&quot;:&quot;全职&quot;,
-            &quot;deliver&quot;:0,
-            &quot;linestaion&quot;:&quot;9号线_漕河泾开发区;12号线_东兰路;12号线_虹梅路;12号线_虹漕路&quot;,
-            &quot;jobDesc&quot;:&quot;职位描述： 职位描述： 岗位职责： 1、负责IOS移动端的产品开发及维护； 2、独立完成产品需求的整理和软件设计； 3、高效完成开发任务，提交高质量代码； 4、优化移动端产品的质量、性能、用户体验。 任职资格： 1、本科及以上学历，计算机相关专业，具有独立开发能力； 2、掌握Objective-C语言的特性，精通内存管理、多线程、响应式链条、绘图等； 3、熟练使用IOS主流开发工具、开源框架，如Cocoa touch、Xcode、IOS SDK等； 4、熟悉UI组件以及原理，对交互有造诣者优先； 5、了解算法、数据库、底层架构者优先； 6、逻辑思维强，有钻研精神，Github上有贡献优秀代码者优先； 7、乐观开朗，善于团队合作，有强烈的责任心。&quot;,
-            &quot;latitude&quot;:&quot;31.164019&quot;
-        }
-    ]
-}
- </code></pre></div>
-
-<h3 id="爬虫示例">爬虫示例</h3>
-
-<p>爬虫示例，目标地址： <a href="http://swiftdoc.org">http://swiftdoc.org</a></p>
-
-<blockquote>
-<p>crawler/swiftDoc</p>
-</blockquote>
-
-<h5 id="toc_81">请求方式：GET</h5>
-
-<h4 id="toc_82">接口示例</h4>
-
-<p><a href="http://api.jinxiansen.com/crawler/swiftDoc">http://api.jinxiansen.com/crawler/swiftDoc</a></p>
-
-<h5 id="toc_83">请求参数</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">参数</th>
-<th style="text-align: left">必选</th>
-<th style="text-align: left">类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">无</td>
-<td style="text-align: left"></td>
-<td style="text-align: left"></td>
-<td style="text-align: left"></td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_84">返回字段</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">返回字段</th>
-<th style="text-align: left">字段类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">status</td>
-<td style="text-align: left">int</td>
-<td style="text-align: left">0 = 请求成功</td>
-</tr>
-<tr>
-<td style="text-align: left">message</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">描述</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_85">返回示例</h4>
-
-<div><pre><code class="language-none">{
-    &quot;status&quot;:0,
-    &quot;message&quot;:&quot;解析成功&quot;,
-    &quot;data&quot;:[
-        {
-            &quot;type&quot;:&quot;Types&quot;,
-            &quot;titles&quot;:[
-                &quot;AnyBidirectionalCollection&quot;,
-                &quot;AnyCollection&quot;,
-                &quot;AnyHashable&quot;,
-                &quot;Zip2Iterator&quot;,
-                &quot;Zip2Sequence&quot;
-            ]
-        }
-    ]
-}
- </code></pre></div>
-
-<h3 id="自定义爬虫">自定义爬虫地址和规则</h3>
-
-<blockquote>
-<p>crawler/query</p>
-</blockquote>
-
-<h5 id="toc_86">请求方式：GET</h5>
-
-<h4 id="toc_87">接口示例</h4>
-
-<p><a href="http://api.jinxiansen.com/crawler/query?url=http://api.jinxiansen.com&amp;parse=div">http://api.jinxiansen.com/crawler/query?url=http://api.jinxiansen.com&amp;parse=div</a></p>
-
-<h5 id="toc_88">请求参数</h5>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">参数</th>
-<th style="text-align: left">必选</th>
-<th style="text-align: left">类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">url</td>
-<td style="text-align: left">是</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">目标 URL</td>
-</tr>
-<tr>
-<td style="text-align: left">parse</td>
-<td style="text-align: left">是</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">爬取规则标签,例如 <code>title</code>,<code>div</code>,<code>div,li</code> ,更多请参考 <a href="https://github.com/scinfu/SwiftSoup">https://github.com/scinfu/SwiftSoup</a></td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_89">返回字段</h4>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left">返回字段</th>
-<th style="text-align: left">字段类型</th>
-<th style="text-align: left">说明</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td style="text-align: left">status</td>
-<td style="text-align: left">int</td>
-<td style="text-align: left">0 = 请求成功</td>
-</tr>
-<tr>
-<td style="text-align: left">message</td>
-<td style="text-align: left">string</td>
-<td style="text-align: left">描述</td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="toc_90">返回示例</h4>
-
-<div><pre><code class="language-none">{
-    &quot;status&quot;: 0,
-    &quot;message&quot;: &quot;解析成功&quot;,
-    &quot;data&quot;: [
-        {
-            &quot;text&quot;: &quot;Auto-generated documentation for Swift. Command-click no more.&quot;,
-            &quot;html&quot;: &quot;&lt;p&gt;Auto-generated documentation for &lt;a href=\&quot;https://developer.apple.com/swift/\&quot;&gt;Swift&lt;/a&gt;. Command-click no more.&lt;/p&gt;&quot;
-        }
-    ]
 }
  </code></pre></div>
 

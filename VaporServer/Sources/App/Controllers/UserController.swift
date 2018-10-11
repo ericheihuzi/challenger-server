@@ -17,15 +17,16 @@ final class UserController: RouteCollection {
         
         let group = router.grouped("users")
         
+        // post
         group.post(User.self, at: "login", use: loginUserHandler)
         group.post(User.self, at: "register", use: registerUserHandler)
         group.post(PasswordContainer.self, at: "changePassword", use: changePasswordHandler)
         group.post(UserInfoContainer.self, at: "updateInfo", use: updateUserInfoHandler)
+        group.post("exit", use: exitUserHandler)
         
+        // get
         group.get("getUserInfo", use: getUserInfoHandler)
         group.get("avatar",String.parameter, use: getUserAvatarHandler)
-        
-        group.post("exit", use: exitUserHandler)
         
     }
     
@@ -101,7 +102,7 @@ extension UserController {
                 .flatMap { user in
                 
                 let logger = try req.make(Logger.self)
-                logger.warning("New user creatd: \(user.account)")
+                logger.warning("New user created: \(user.account)")
                 
                 return try self.authController
                     .authContainer(for: user, on: req)
@@ -179,8 +180,7 @@ extension UserController {
         
         guard let token = req.query[String.self,
                                     at: "token"] else {
-            return try ResponseJSON<Empty>(status: .error,
-                                           message: "缺少 token 参数").encode(for: req)
+            return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
         }
         
         let bearToken = BearerAuthorization(token: token)
@@ -211,7 +211,7 @@ extension UserController {
         let path = try VaporUtils.localRootDir(at: ImagePath.userPic, req: req) + "/" + name
         if !FileManager.default.fileExists(atPath: path) {
             let json = ResponseJSON<Empty>(status: .error,
-                                           message: "图片不存在")
+                                           message: "Image does not exist")
             return try json.encode(for: req)
         }
         return try req.streamFile(at: path)
@@ -235,8 +235,7 @@ extension UserController {
                 var imgName: String?
                 if let file = container.picImage { //如果上传了图片，就判断下大小，否则就揭过这一茬。
                     guard file.data.count < ImageMaxByteSize else {
-                        return try ResponseJSON<Empty>(status: .error,
-                                                      message: "图片过大，得压缩！").encode(for: req)
+                        return try ResponseJSON<Empty>(status: .pictureTooBig).encode(for: req)
                     }
                     imgName = try VaporUtils.imageName()
                     let path = try VaporUtils.localRootDir(at: ImagePath.userPic, req: req) + "/" + imgName!
@@ -270,7 +269,7 @@ extension UserController {
                 
                 return (userInfo!.save(on: req).flatMap({ (info) in
                     return try ResponseJSON<Empty>(status: .ok,
-                                                   message: "更新成功").encode(for: req)
+                                                   message: "Updated successfully!").encode(for: req)
                 }))
             })
         })

@@ -39,7 +39,7 @@ extension EmailController {
                                                       sendTime: TimeManager.shared.current())
                     return result.save(on: req).flatMap({ (us) in
                         return try ResponseJSON(status: .ok,
-                                                message: "发送成功", data: result).encode(for: req)
+                                                message: "Send successfully!", data: result).encode(for: req)
                     })
                 })
             })

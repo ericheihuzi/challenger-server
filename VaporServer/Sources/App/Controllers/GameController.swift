@@ -179,7 +179,7 @@ extension GameController {
                         
                         return (actorInfo!.save(on: req).flatMap({ (info) in
                             return try ResponseJSON<Empty>(status: .ok,
-                                                           message: "更新成功").encode(for: req)
+                                                           message: "Updated successfully!").encode(for: req)
                         }))
                     })
             })
@@ -298,7 +298,7 @@ extension GameController {
                         
                         return (challengeInfo!.save(on: req).flatMap({ (info) in
                             return try ResponseJSON<Empty>(status: .ok,
-                                                           message: "更新成功").encode(for: req)
+                                                           message: "Updated successfully!").encode(for: req)
                         }))
                     })
             })
@@ -316,8 +316,7 @@ extension GameController {
                 var iconName: String?
                 if let file = container.iconImage { //如果上传了图片，就判断下大小，否则就揭过这一茬。
                     guard file.data.count < ImageMaxByteSize else {
-                        return try ResponseJSON<Empty>(status: .error,
-                                                       message: "图片过大，得压缩！").encode(for: req)
+                        return try ResponseJSON<Empty>(status: .pictureTooBig).encode(for: req)
                     }
                     iconName = try VaporUtils.imageName()
                     let path = try VaporUtils.localRootDir(at: ImagePath.gameIcon, req: req) + "/" + iconName!
@@ -328,8 +327,7 @@ extension GameController {
                 var coverName: String?
                 if let file = container.coverImage { //如果上传了图片，就判断下大小，否则就揭过这一茬。
                     guard file.data.count < ImageMaxByteSize else {
-                        return try ResponseJSON<Empty>(status: .error,
-                                                       message: "图片过大，得压缩！").encode(for: req)
+                        return try ResponseJSON<Empty>(status: .pictureTooBig).encode(for: req)
                     }
                     coverName = try VaporUtils.imageName()
                     let path = try VaporUtils.localRootDir(at: ImagePath.gameCover, req: req) + "/" + coverName!
@@ -378,7 +376,7 @@ extension GameController {
                 
                 return (gameInfo!.save(on: req).flatMap({ (info) in
                     return try ResponseJSON<Empty>(status: .ok,
-                                                   message: "更新成功").encode(for: req)
+                                                   message: "Updated successfully!").encode(for: req)
                 }))
             })
     }
@@ -424,7 +422,7 @@ extension GameController {
     //
     //                        return (userGameInfo!.save(on: req).flatMap({ (info) in
     //                            return try ResponseJSON<Empty>(status: .ok,
-    //                                                           message: "更新成功").encode(for: req)
+    //                                                           message: "Updated successfully!").encode(for: req)
     //                        }))
     //                    })
     //            })
@@ -452,7 +450,7 @@ extension GameController {
         guard let gameID = req.query[String.self,
                                      at: "gameID"] else {
                                         return try ResponseJSON<Empty> (status: .error,
-                                                                        message: "缺少 gameID 参数").encode(for: req)
+                                                                        message: "Missing `token` parameter").encode(for: req)
         }
         
         let first = GameInfo
@@ -475,14 +473,13 @@ extension GameController {
         
         guard let token = req.query[String.self,
                                     at: "token"] else {
-                                        return try ResponseJSON<Empty>(status: .error,
-                                                                       message: "缺少 token 参数").encode(for: req)
+                                        return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
         }
         
         guard let gameID = req.query[String.self,
                                      at: "gameID"] else {
                                         return try ResponseJSON<Empty> (status: .error,
-                                                                        message: "缺少 gameID 参数").encode(for: req)
+                                                                        message: "Missing `token` parameter").encode(for: req)
         }
         
         let bearToken = BearerAuthorization(token: token)
@@ -503,7 +500,7 @@ extension GameController {
                 return first.flatMap({ (existInfo) in
                     guard let existInfo = existInfo else {
                         return try ResponseJSON<Empty>(status: .error,
-                                                       message: "用户游戏信息为空").encode(for: req)
+                                                       message: "User game information is empty.").encode(for: req)
                     }
                     return try ResponseJSON<ActorInfo>(data: existInfo).encode(for: req)
                 })
@@ -516,7 +513,7 @@ extension GameController {
         let name = try req.parameters.next(String.self)
         let path = try VaporUtils.localRootDir(at: ImagePath.gameIcon, req: req) + "/" + name
         if !FileManager.default.fileExists(atPath: path) {
-            let json = ResponseJSON<Empty>(status: .error, message: "图片不存在")
+            let json = ResponseJSON<Empty>(status: .error, message: "Image does not exist")
             return try json.encode(for: req)
         }
         return try req.streamFile(at: path)
@@ -528,7 +525,7 @@ extension GameController {
         let name = try req.parameters.next(String.self)
         let path = try VaporUtils.localRootDir(at: ImagePath.gameCover, req: req) + "/" + name
         if !FileManager.default.fileExists(atPath: path) {
-            let json = ResponseJSON<Empty>(status: .error, message: "图片不存在")
+            let json = ResponseJSON<Empty>(status: .error, message: "Image does not exist")
             return try json.encode(for: req)
         }
         return try req.streamFile(at: path)
@@ -540,7 +537,7 @@ extension GameController {
         guard let gameID = req.query[String.self,
                                      at: "gameID"] else {
                                         return try ResponseJSON<Empty> (status: .error,
-                                                                        message: "缺少 gameID 参数").encode(for: req)
+                                                                        message: "Missing `token` parameter").encode(for: req)
         }
         
         return ActorInfo
@@ -562,7 +559,7 @@ extension GameController {
         guard let gameID = req.query[String.self,
                                      at: "gameID"] else {
                                         return try ResponseJSON<Empty> (status: .error,
-                                                                        message: "缺少 gameID 参数").encode(for: req)
+                                                                        message: "Missing `token` parameter").encode(for: req)
         }
         
         return ActorInfo
@@ -584,7 +581,7 @@ extension GameController {
         guard let gameID = req.query[String.self,
                                      at: "gameID"] else {
                                         return try ResponseJSON<Empty> (status: .error,
-                                                                        message: "缺少 gameID 参数").encode(for: req)
+                                                                        message: "Missing `token` parameter").encode(for: req)
         }
         
         return ActorInfo
@@ -633,7 +630,7 @@ extension GameController {
     //
     //                        return (actor!.save(on: req).flatMap({ (info) in
     //                            return try ResponseJSON<Empty>(status: .ok,
-    //                                                           message: "更新成功").encode(for: req)
+    //                                                           message: "Updated successfully!").encode(for: req)
     //                        }))
     //                    })
     //            })

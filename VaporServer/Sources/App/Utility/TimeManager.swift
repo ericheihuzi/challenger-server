@@ -22,6 +22,11 @@ struct TimeManager {
         return matter.string(from: Date())
     }
     
+}
+
+extension TimeManager {
+    
+    // Static func
     static func current() -> String {
         return self.shared.matter.string(from: Date())
     }

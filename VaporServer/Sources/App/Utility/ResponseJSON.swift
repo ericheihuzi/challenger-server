@@ -54,6 +54,8 @@ enum ResponseStatus:Int,Content {
     case userExist = 20
     case userNotExist = 21
     case passwordError = 22
+    case missesToken = 28
+    case pictureTooBig = 30
     
     var desc : String {
         switch self {
@@ -73,8 +75,10 @@ enum ResponseStatus:Int,Content {
             return "用户不存在"
         case .passwordError:
             return "密码不正确"
-        
-            
+        case .missesToken:
+            return "Missing `token` parameter"
+        case .pictureTooBig:
+            return "The picture needs to be compressed!"
         }
     }
     

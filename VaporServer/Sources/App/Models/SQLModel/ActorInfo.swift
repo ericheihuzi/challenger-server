@@ -17,23 +17,11 @@ struct ActorInfo : BaseSQLModel {
     
     static var entity: String { return self.name + "s" }
     
-    // 0-未支付/未解锁，1-已支付/已解锁
-    var ispay: Int?
+    var ispay: Int? // 0-未支付/未解锁，1-已支付/已解锁
     
-//    var challengeTime: Int?
     var newscore: Int?
     var maxscore: Int?
-//    var grade: String?
     var level: Int?
-    //var ranking: Int?
-    //var rankingChange: Int?
-    
-//    var rewscore: Int?
-//    var cawscore: Int?
-//    var inwscore: Int?
-//    var mewscore: Int?
-//    var spwscore: Int?
-//    var crwscore: Int?
     
     var rescore: Int?
     var cascore: Int?
@@ -55,18 +43,10 @@ struct ActorInfo : BaseSQLModel {
          
          ispay: Int?,
          
-//         challengeTime: Int?,
          maxscore: Int?,
          newscore: Int?,
-//         grade: String?,
          level: Int?,
          
-//         rewscore: Int?,
-//         cawscore: Int?,
-//         inwscore: Int?,
-//         mewscore: Int?,
-//         spwscore: Int?,
-//         crwscore: Int?,
         
          rescore: Int?,
          cascore: Int?,
@@ -90,18 +70,9 @@ struct ActorInfo : BaseSQLModel {
         
         self.ispay = ispay
         
-//        self.challengeTime = challengeTime
         self.maxscore = maxscore
         self.newscore = newscore
-//        self.grade = grade
         self.level = level
-        
-//        self.rewscore = rewscore
-//        self.cawscore = cawscore
-//        self.inwscore = inwscore
-//        self.mewscore = mewscore
-//        self.spwscore = spwscore
-//        self.crwscore = crwscore
         
         self.rescore = rescore
         self.cascore = cascore
@@ -140,37 +111,12 @@ extension ActorInfo {
             self.ispay = new
         }
         
-//        if let new = container.challengeTime {
-//            self.challengeTime = new
-//        }
         if let new = container.maxscore {
             self.maxscore = new
         }
         if let new = container.newscore {
             self.newscore = new
         }
-//        if let new = container.grade {
-//            self.grade = new
-//        }
-        
-//        if let new = container.rewscore {
-//            self.rewscore = new
-//        }
-//        if let new = container.cawscore {
-//            self.cawscore = new
-//        }
-//        if let new = container.inwscore {
-//            self.inwscore = new
-//        }
-//        if let new = container.mewscore {
-//            self.mewscore = new
-//        }
-//        if let new = container.spwscore {
-//            self.spwscore = new
-//        }
-//        if let new = container.crwscore {
-//            self.crwscore = new
-//        }
         
         if let new = container.rescore {
             self.rescore = new

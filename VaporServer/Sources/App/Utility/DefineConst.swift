@@ -17,7 +17,6 @@ struct ImagePath {
     static let record = "record" //动态
     static let report = "report" // 举报
     static let userPic = "userPic" // 用户头像
-    static let note = "note" // 笔记
     static let gameIcon = "gameIcon" // 游戏图标
     static let gameCover = "gameCover" // 游戏封面
 }
