@@ -23,7 +23,7 @@ struct GameInfo : BaseSQLModel {
     var category: String?
     //var join: Int
     var level: Int?
-    var round: Int?
+    var average: Int?
     var color: String?
     var rescore: Int?
     var cascore: Int?
@@ -68,8 +68,8 @@ extension GameInfo {
         if let new = container.level {
             self.level = new
         }
-        if let new = container.round {
-            self.round = new
+        if let new = container.average {
+            self.average = new
         }
         if let new = container.color {
             self.color = new

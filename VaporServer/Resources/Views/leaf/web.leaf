@@ -1506,7 +1506,7 @@ kbd {
         "title": "图形逻辑",
         "cascore": 130,
         "category": "reasoning",
-        "round": 20,
+        "average": 20,
         "mescore": 100,
         "level": 20
     },

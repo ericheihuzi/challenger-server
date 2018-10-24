@@ -81,93 +81,30 @@ extension GameController {
                             max = oldMax
                         }
                         
-                        //                        var grade: String = "段位"
-                        //                        if max >= 0 && max <= 50 {
-                        //                            grade = "石头"
-                        //                        } else if max > 50 && max <= 60 {
-                        //                            grade = "痴者"
-                        //                        } else if max > 60 && max <= 80 {
-                        //                            grade = "愚者"
-                        //                        } else if max > 80 && max <= 110 {
-                        //                            grade = "凡者"
-                        //                        } else if max > 110 && max <= 120 {
-                        //                            grade = "明者"
-                        //                        } else if max > 120 && max <= 140 {
-                        //                            grade = "灵者"
-                        //                        } else if max > 140 && max <= 150 {
-                        //                            grade = "智者"
-                        //                        } else if max > 150 && max <= 200 {
-                        //                            grade = "歌者"
-                        //                        } else if max > 200 && max <= 300 {
-                        //                            grade = "归零者"
-                        //                        }
-                        
-                        //                        let oldRew = existInfo?.rewscore ?? 0
-                        //                        let oldCaw = existInfo?.cawscore ?? 0
-                        //                        let oldInw = existInfo?.inwscore ?? 0
-                        //                        let oldMew = existInfo?.mewscore ?? 0
-                        //                        let oldSpw = existInfo?.spwscore ?? 0
-                        //                        let oldCrw = existInfo?.crwscore ?? 0
-                        //
-                        //                        var newRew = container.rescore ?? 0
-                        //                        var newCaw = container.cascore ?? 0
-                        //                        var newInw = container.inscore ?? 0
-                        //                        var newMew = container.mescore ?? 0
-                        //                        var newSpw = container.spscore ?? 0
-                        //                        var newCrw = container.crscore ?? 0
-                        //
-                        //                        if newRew < oldRew { newRew = oldRew }
-                        //                        if newCaw < oldCaw { newCaw = oldCaw }
-                        //                        if newInw < oldInw { newInw = oldInw }
-                        //                        if newMew < oldMew { newMew = oldMew }
-                        //                        if newSpw < oldSpw { newSpw = oldSpw }
-                        //                        if newCrw < oldCrw { newCrw = oldCrw }
-                        
                         let actorInfo: ActorInfo?
                         if var existInfo = existInfo { //存在则更新。
                             
                             existInfo.maxscore = max
                             existInfo.newscore = new
-                            //                            existInfo.grade = grade
-                            
-                            //                            existInfo.rewscore = newRew
-                            //                            existInfo.cawscore = newCaw
-                            //                            existInfo.inwscore = newInw
-                            //                            existInfo.mewscore = newMew
-                            //                            existInfo.spwscore = newSpw
-                            //                            existInfo.crwscore = newCrw
                             
                             actorInfo = existInfo.update(with: container)
                         } else {
                             actorInfo = ActorInfo(userID: existToken.userID,
                                                   gameID: container.gameID,
-                                                  
                                                   ispay: container.ispay,
-                                                  
-                                                  //                                                  challengeTime: container.challengeTime,
-                                maxscore: max,
-                                newscore: new,
-                                //                                                  grade: grade,
-                                level: container.level,
-                                
-                                //                                                  rewscore: newRew,
-                                //                                                  cawscore: newCaw,
-                                //                                                  inwscore: newInw,
-                                //                                                  mewscore: newMew,
-                                //                                                  spwscore: newSpw,
-                                //                                                  crwscore: newCrw,
-                                
-                                rescore: container.rescore,
-                                cascore: container.cascore,
-                                inscore: container.inscore,
-                                mescore: container.mescore,
-                                spscore: container.spscore,
-                                crscore: container.crscore,
-                                
-                                sex: container.sex,
-                                nickName: container.nickName,
-                                location: container.location,
-                                picName: container.picName)
+                                                  maxscore: max,
+                                                  newscore: new,
+                                                  level: container.level,
+                                                  rescore: container.rescore,
+                                                  cascore: container.cascore,
+                                                  inscore: container.inscore,
+                                                  mescore: container.mescore,
+                                                  spscore: container.spscore,
+                                                  crscore: container.crscore,
+                                                  sex: container.sex,
+                                                  nickName: container.nickName,
+                                                  location: container.location,
+                                                  picName: container.picName)
                         }
                         
                         let challengeLog: ChallengeLog?
@@ -339,7 +276,7 @@ extension GameController {
                 if var existInfo = existInfo { //存在则更新。
                     gameInfo = existInfo.update(with: container)
                     
-                    if let existIconName = existInfo.iconName,let iconName = iconName { //移除原来的照片
+                    if let existIconName = existInfo.iconName,let iconName = iconName { //移除原来的图片
                         let path = try VaporUtils.localRootDir(at: ImagePath.gameIcon, req: req) + "/" + existIconName
                         try FileManager.default.removeItem(at: URL.init(fileURLWithPath: path))
                         gameInfo?.iconName = iconName
@@ -347,7 +284,7 @@ extension GameController {
                         gameInfo?.iconName = iconName
                     }
                     
-                    if let existCoverName = existInfo.coverName,let coverName = coverName { //移除原来的照片
+                    if let existCoverName = existInfo.coverName,let coverName = coverName { //移除原来的图片
                         let path = try VaporUtils.localRootDir(at: ImagePath.gameCover, req: req) + "/" + existCoverName
                         try FileManager.default.removeItem(at: URL.init(fileURLWithPath: path))
                         gameInfo?.coverName = coverName
@@ -364,7 +301,7 @@ extension GameController {
                                         price: container.price,
                                         category: container.category,
                                         level: container.level,
-                                        round: container.round,
+                                        average: container.average,
                                         color: container.color,
                                         rescore: container.rescore,
                                         cascore: container.cascore,
@@ -686,7 +623,7 @@ struct GameInfoContainer: Content {
     var category: String?
     //var join: Int?
     var level: Int?
-    var round: Int?
+    var average: Int?
     var color: String?
     var rescore: Int?
     var cascore: Int?

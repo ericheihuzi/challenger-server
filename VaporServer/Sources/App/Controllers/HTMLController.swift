@@ -31,6 +31,10 @@ class HTMLController: RouteCollection {
             group.get("userProtocol", use: userProtocol)
         }
         
+        router.group("help") { (group) in
+            group.get("RE-0001", use: hello)
+        }
+        
     }
     
 
