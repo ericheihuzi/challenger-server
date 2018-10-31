@@ -24,6 +24,7 @@ final class ChallengeController: RouteCollection {
         group.get("getChallengeLog", use: getChallengeLogHandler) // 获取挑战记录
         group.get("getGameChallengeLog", use: getGameChallengeLogHandler) // 获取指定游戏挑战记录
         group.get("getTodayWorldRanking", use: getTodayWorldRankingHandler) // 获取全部游戏的当日排名列表
+        group.get("getWorldRanking", use: getWorldRankingHandler) // 获取全部游戏的排名列表
         
     }
     
@@ -239,6 +240,21 @@ extension ChallengeController {
         return ChallengeInfo
             .query(on: req)
             .filter(\.date == date)
+            .sort(\.maxscore,.descending) //ascending or descending:升序或降序
+            .all()
+            .flatMap({ (info) in
+                let infoList = info.compactMap({ ChallengeInfo -> ChallengeInfo in
+                    var w = ChallengeInfo;w.id = nil;return w
+                })
+                return try ResponseJSON<[ChallengeInfo]>(data: infoList).encode(for: req)
+            })
+    }
+    
+    //MARK: 获取全部游戏的排名列表
+    func getWorldRankingHandler(_ req: Request) throws -> Future<Response> {
+        
+        return ChallengeInfo
+            .query(on: req)
             .sort(\.maxscore,.descending) //ascending or descending:升序或降序
             .all()
             .flatMap({ (info) in

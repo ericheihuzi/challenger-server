@@ -111,6 +111,10 @@ extension ActorInfo {
             self.ispay = new
         }
         
+        if let new = container.level {
+            self.level = new
+        }
+        
         if let new = container.maxscore {
             self.maxscore = new
         }

@@ -32,7 +32,9 @@ class HTMLController: RouteCollection {
         }
         
         router.group("help") { (group) in
-            group.get("RE-0001", use: hello)
+            group.get("IN-0001", use: hello)
+            group.get("RE-0001", use: login)
+            group.get("CA-0001", use: api)
         }
         
     }
