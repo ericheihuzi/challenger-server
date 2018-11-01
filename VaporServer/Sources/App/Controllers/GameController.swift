@@ -15,17 +15,11 @@ final class GameController: RouteCollection {
         
         let group = router.grouped("games")
         
-        // 更新用户指定游戏的信息
-        //group.post(UserGameInfoContainer.self, at: "updateUserGameInfo", use: updateUserGameInfoHandler)
-        // 更新参与者信息
-        //group.post(ActorContainer.self, at: "updateGameActor", use: updateGameActorHandler)
-        
         // 更新/添加游戏信息
         group.post(GameInfoContainer.self, at: "updateGameInfo", use: updateGameInfoHandler)
         
         // 更新用户指定游戏的信息/更新参与者信息/更新挑战信息--/更新挑战记录
         group.post(ActorInfoContainer.self, at: "updateActorInfo", use: updateActorInfoHandler)
-        //group.post(ActorInfoContainer.self, at: "updateChallengeInfo", use: updateChallengeInfoHandler)
         
         group.get("getGameList", use: getGameListHandler) // 获取游戏列表
         group.get("getGameInfo", use: getGameInfoHandler) // 获取指定游戏信息
@@ -318,53 +312,6 @@ extension GameController {
             })
     }
     
-    //    //MARK: 更新用户指定游戏的信息
-    //    func updateUserGameInfoHandler(_ req: Request,container: UserGameInfoContainer) throws -> Future<Response> {
-    //
-    //        let bearToken = BearerAuthorization(token: container.token)
-    //        return AccessToken
-    //            .authenticate(using: bearToken, on: req)
-    //            .flatMap({ (existToken) in
-    //                guard let existToken = existToken else {
-    //                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
-    //                }
-    //
-    //                return UserGameInfo
-    //                    .query(on: req)
-    //                    .filter(\.userID == existToken.userID)
-    //                    .filter(\.gameID == container.gameID)
-    //                    .first()
-    //                    .flatMap({ (existInfo) in
-    //
-    //                        let userGameInfo: UserGameInfo?
-    //                        if var existInfo = existInfo { //存在则更新。
-    //                            userGameInfo = existInfo.update(with: container)
-    //                        } else {
-    //                            userGameInfo = UserGameInfo(id: nil,
-    //                                                          userID: existToken.userID,
-    //                                                          gameID: container.gameID,
-    //                                                          ispay: container.ispay,
-    //                                                          newscore: container.newscore,
-    //                                                          maxscore: container.maxscore,
-    //                                                          level: container.level,
-    //                                                          ranking: nil,
-    //                                                          rankingChange: nil,
-    //                                                          rescore: container.rescore,
-    //                                                          cascore: container.cascore,
-    //                                                          inscore: container.inscore,
-    //                                                          mescore: container.mescore,
-    //                                                          spscore: container.spscore,
-    //                                                          crscore: container.crscore)
-    //                        }
-    //
-    //                        return (userGameInfo!.save(on: req).flatMap({ (info) in
-    //                            return try ResponseJSON<Empty>(status: .ok,
-    //                                                           message: "Updated successfully!").encode(for: req)
-    //                        }))
-    //                    })
-    //            })
-    //    }
-    
     //MARK: 获取游戏列表
     func getGameListHandler(_ req: Request) throws -> Future<Response> {
         
@@ -533,68 +480,6 @@ extension GameController {
             })
     }
     
-    //    //MARK: 更新参与者信息
-    //    func updateGameActorHandler(_ req: Request,container: ActorContainer) throws -> Future<Response> {
-    //
-    //        let bearToken = BearerAuthorization(token: container.token)
-    //        return AccessToken
-    //            .authenticate(using: bearToken, on: req)
-    //            .flatMap({ (existToken) in
-    //                guard let existToken = existToken else {
-    //                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
-    //                }
-    //
-    //                return Actor
-    //                    .query(on: req)
-    //                    .filter(\.userID == existToken.userID)
-    //                    .filter(\.gameID == container.gameID)
-    //                    .first()
-    //                    .flatMap({ (existActor) in
-    //
-    //                        let actor: Actor?
-    //                        if var existActor = existActor { //存在则更新。
-    //                            actor = existActor.update(with: container)
-    //                        } else {
-    //                            actor = Actor(userID: existToken.userID,
-    //                                          gameID: container.gameID,
-    //                                          score: container.score,
-    //                                          grade: container.grade,
-    //                                          sex: container.sex,
-    //                                          nickName: container.nickName,
-    //                                          location: container.location,
-    //                                          picName: container.picName)
-    //                        }
-    //
-    //                        return (actor!.save(on: req).flatMap({ (info) in
-    //                            return try ResponseJSON<Empty>(status: .ok,
-    //                                                           message: "Updated successfully!").encode(for: req)
-    //                        }))
-    //                    })
-    //            })
-    //    }
-    
-    //    //MARK: 获取全部游戏的当日排名列表
-    //    func getTodayWorldRankingHandler(_ req: Request) throws -> Future<Response> {
-    //
-    //        let nowDate = Date()
-    //        let formatter = DateFormatter()
-    //        formatter.timeZone = NSTimeZone.system
-    //        formatter.dateFormat = "yyyy-MM-dd"
-    //        let date = formatter.string(from: nowDate)
-    //
-    //        return ActorInfo
-    //            .query(on: req)
-    //            .filter(\.date == date)
-    //            .sort(\.maxscore,.descending) //ascending or descending:升序或降序
-    //            .all()
-    //            .flatMap({ (actor) in
-    //                let actorList = actor.compactMap({ ActorInfo -> ActorInfo in
-    //                    var w = ActorInfo;w.id = nil;return w
-    //                })
-    //                return try ResponseJSON<[ActorInfo]>(data: actorList).encode(for: req)
-    //            })
-    //    }
-    
 }
 
 fileprivate struct TokenContainer: Content {
@@ -637,48 +522,6 @@ struct GameInfoContainer: Content {
     
 }
 
-//struct UserGameInfoContainer: Content {
-//
-//    var token: String
-//    var gameID: String
-//
-//    var ispay: Int?
-//
-//    var challengeTime: Int?
-//    var newscore: Int?
-//    var maxscore: Int?
-//    var level: Int?
-//
-//    var rescore: Int?
-//    var cascore: Int?
-//    var inscore: Int?
-//    var mescore: Int?
-//    var spscore: Int?
-//    var crscore: Int?
-//
-//    var date: String?
-//    var time: String?
-//
-//}
-
-//struct ActorContainer: Content {
-//
-//    var token: String
-//    var gameID: String
-//
-//    var score: Int?
-//    var grade: String?
-//
-//    var sex: Int?
-//    var nickName: String?
-//    var location: String?
-//    var picName: String?
-//
-//    var date: String?
-//    var time: String?
-//
-//}
-
 struct ActorInfoContainer: Content {
     
     var token: String
@@ -691,13 +534,6 @@ struct ActorInfoContainer: Content {
     var maxscore: Int? //无需用户提交
     var grade: String? //无需用户提交
     var level: Int?
-    
-    //    var rewscore: Int? //无需用户提交
-    //    var cawscore: Int? //无需用户提交
-    //    var inwscore: Int? //无需用户提交
-    //    var mewscore: Int? //无需用户提交
-    //    var spwscore: Int? //无需用户提交
-    //    var crwscore: Int? //无需用户提交
     
     var rescore: Int?
     var cascore: Int?
