@@ -20,6 +20,8 @@ final class ChallengeController: RouteCollection {
         group.get("getChallengeInfo", use: getChallengeInfoHandler) // 获取挑战信息
         group.get("getChallengeLog", use: getChallengeLogHandler) // 获取挑战记录
         group.get("getGameChallengeLog", use: getGameChallengeLogHandler) // 获取指定游戏挑战记录
+        group.get("getChallengeTime", use: getChallengeTime) // 获取挑战次数(全部)
+        group.get("getTodayChallengeTime", use: getTodayChallengeTime) // 获取挑战次数(今日)
         group.get("getTodayWorldRanking", use: getTodayWorldRankingHandler) // 获取全部游戏的当日排名列表
         group.get("getWorldRanking", use: getWorldRankingHandler) // 获取全部游戏的排名列表
         group.get("getGradeList", use: getGradeHandler) // 获取段位列表
@@ -135,6 +137,73 @@ extension ChallengeController {
                         var w = ChallengeLog;w.id = nil;return w
                     })
                     return try ResponseJSON<[ChallengeLog]>(data: logList).encode(for: req)
+                })
+            })
+    }
+    
+    //MARK: 获取挑战次数（全部）
+    func getChallengeTime(_ req: Request) throws -> Future<Response> {
+        
+        guard let token = req.query[String.self,
+                                    at: "token"] else {
+                                        return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
+        }
+        
+        let bearToken = BearerAuthorization(token: token)
+        
+        return AccessToken
+            .authenticate(using: bearToken, on: req)
+            .flatMap({ (existToken) in
+                
+                guard let existToken = existToken else {
+                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+                }
+                
+                let all = ChallengeLog
+                    .query(on: req)
+                    .filter(\.userID == existToken.userID)
+                    .all()
+                
+                return all.flatMap({ (log) in
+                    let time = log.count
+                    return try time.encode(for: req)
+                })
+            })
+    }
+    
+    //MARK: 获取挑战次数（今日）
+    func getTodayChallengeTime(_ req: Request) throws -> Future<Response> {
+        
+        guard let token = req.query[String.self,
+                                    at: "token"] else {
+                                        return try ResponseJSON<Empty>(status: .missesToken).encode(for: req)
+        }
+        
+        let bearToken = BearerAuthorization(token: token)
+        
+        return AccessToken
+            .authenticate(using: bearToken, on: req)
+            .flatMap({ (existToken) in
+                
+                guard let existToken = existToken else {
+                    return try ResponseJSON<Empty>(status: .token).encode(for: req)
+                }
+                
+                let nowDate = Date()
+                let formatter = DateFormatter()
+                formatter.timeZone = NSTimeZone.system
+                formatter.dateFormat = "yyyy-MM-dd"
+                let date = formatter.string(from: nowDate)
+                
+                let all = ChallengeLog
+                    .query(on: req)
+                    .filter(\.date == date)
+                    .filter(\.userID == existToken.userID)
+                    .all()
+                
+                return all.flatMap({ (log) in
+                    let time = log.count
+                    return try time.encode(for: req)
                 })
             })
     }

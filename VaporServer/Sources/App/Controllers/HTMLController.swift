@@ -15,26 +15,14 @@ class HTMLController: RouteCollection {
         router.get("/", use: api)
       
         router.group("h5") { (group) in
-            
-            group.get("login", use: login)
-            group.get("welcome", use: api)
-            group.get("hello", use: hello)
-            
-            group.get("u", use: dogView)
-            group.get("loader", use: loader)
-            group.get("reboot", use: reboot)
-            group.get("keyboard", use: keyboard)
-            group.get("color", use: color)
-            group.get("line", use: line)
-            
             group.get("userPrivacy", use: userPrivacy)
             group.get("userProtocol", use: userProtocol)
         }
         
         router.group("help") { (group) in
-            group.get("IN-0001", use: hello)
-            group.get("RE-0001", use: login)
-            group.get("CA-0001", use: api)
+            group.get("IN-0001", use: help_in_0001)
+            group.get("RE-0001", use: help_re_0001)
+            group.get("CA-0001", use: help_ca_0001)
         }
         
     }
@@ -51,9 +39,6 @@ extension HTMLController {
     }
     
     //MARK: H5
-    func login(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/login")
-    }
     
     func hello(_  req: Request) throws -> Future<View> {
         
@@ -73,31 +58,15 @@ extension HTMLController {
         return try req.view().render("leaf/userProtocol")
     }
     
-    func dogView(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/dog")
+    func help_in_0001(_  req: Request) throws -> Future<View> {
+        return try req.view().render("leaf/IN-0001")
     }
-    
-    func line(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/line")
+    func help_re_0001(_  req: Request) throws -> Future<View> {
+        return try req.view().render("leaf/IN-0001")
     }
-    
-    func reboot(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/reboot")
+    func help_ca_0001(_  req: Request) throws -> Future<View> {
+        return try req.view().render("leaf/IN-0001")
     }
-    
-    func loader(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/loader")
-    }
-    
-    func keyboard(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/keyboard")
-    }
-    
-    func color(_ req: Request) throws -> Future<View> {
-        return try req.view().render("leaf/color")
-    }
-
-    
 }
 
 

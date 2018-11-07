@@ -16,7 +16,6 @@ struct ChallengeInfo : BaseSQLModel {
 
     static var entity: String { return self.name + "s" }
 
-    var challengeTime: Int?
     var grade: String?
     var maxscore: Int?
 
@@ -37,7 +36,6 @@ struct ChallengeInfo : BaseSQLModel {
 
     init(userID: String,
          
-         challengeTime: Int?,
          maxscore: Int?,
          grade: String?,
          
@@ -60,7 +58,6 @@ struct ChallengeInfo : BaseSQLModel {
         
         self.userID = userID
         
-        self.challengeTime = challengeTime
         self.maxscore = maxscore
         self.grade = grade
         
@@ -97,9 +94,6 @@ extension ChallengeInfo {
     
     mutating func update(with container: ActorInfoContainer) -> ChallengeInfo {
         
-        if let new = container.challengeTime {
-            self.challengeTime = new
-        }
         if let new = container.maxscore {
             self.maxscore = new
         }

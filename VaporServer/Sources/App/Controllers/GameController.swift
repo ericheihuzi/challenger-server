@@ -210,7 +210,6 @@ extension GameController {
                         } else {
                             challengeInfo = ChallengeInfo(userID: existToken.userID,
                                                           
-                                                          challengeTime: container.challengeTime,
                                                           maxscore: max,
                                                           grade: grade,
                                                           
@@ -474,8 +473,8 @@ extension GameController {
             .all()
             .flatMap({ (actor) in
                 let join = actor.count
-                //let data = ["join": join]
                 return try join.encode(for: req)
+                //let data = ["join": join]
                 //return try ResponseJSON(data: data).encode(for: req)
             })
     }
@@ -506,7 +505,6 @@ struct GameInfoContainer: Content {
     var coverName: String?
     var price: Double?
     var category: String?
-    //var join: Int?
     var level: Int?
     var average: Int?
     var color: String?
@@ -529,7 +527,6 @@ struct ActorInfoContainer: Content {
     
     var ispay: Int?
     
-    var challengeTime: Int?
     var newscore: Int? //无需用户提交
     var maxscore: Int? //无需用户提交
     var grade: String? //无需用户提交
@@ -556,7 +553,6 @@ struct ChallengeInfoContainer: Content {
     
     var token:String
     
-    var challengeTime: Int?
     var maxscore: Int?
     var grade: String?
     

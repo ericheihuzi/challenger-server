@@ -21,7 +21,6 @@ struct GameInfo : BaseSQLModel {
     var coverName: String?
     var price: Double?
     var category: String?
-    //var join: Int
     var level: Int?
     var average: Int?
     var color: String?
@@ -50,13 +49,6 @@ extension GameInfo {
         if let new = container.title {
             self.title = new
         }
-        
-//        if let new = container.iconName {
-//            self.iconName = new
-//        }
-//        if let new = container.coverName {
-//            self.coverName = new
-//        }
         
         if let new = container.price {
             self.price = new
