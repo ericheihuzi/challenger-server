@@ -396,6 +396,8 @@ kbd {
 <li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%91%E6%88%98%E4%BF%A1%E6%81%AF">获取挑战信息</a></li>
 <li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B8%B8%E6%88%8F%E6%8C%91%E6%88%98%E8%AE%B0%E5%BD%95">获取指定游戏挑战记录</a></li>
 <li><a href="#%E8%8E%B7%E5%8F%96%E6%8C%91%E6%88%98%E8%AE%B0%E5%BD%95">获取挑战记录</a></li>
+<li><a href="%E8%8E%B7%E5%8F%96%E5%85%A8%E9%83%A8%E6%8C%91%E6%88%98%E6%AC%A1%E6%95%B0">获取全部挑战次数</a></li>
+<li><a href="%E8%8E%B7%E5%8F%96%E4%BB%8A%E6%97%A5%E6%8C%91%E6%88%98%E6%AC%A1%E6%95%B0">获取今日挑战次数</a></li>
 </ul>
 
 <p><a href="#%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6">其他</a></p>
@@ -1600,23 +1602,20 @@ kbd {
 
 <h2 id="网页">网页</h2>
 
-<p>这里有几个 Vapor 部署的 H5 页面示例，你可以点击查看效果。</p>
+<p>协议相关</p>
+<p>
+<a href="http://api.jinxiansen.com/h5/userPrivacy">用户协议</a>
+<a href="http://api.jinxiansen.com/h5/userProtocol">隐私政策</a>
+</p>
 
-<p><a href="http://api.jinxiansen.com/h5/keyboard">Keyboard</a>
-<a href="http://api.jinxiansen.com/h5/line">Line</a>
-<a href="http://api.jinxiansen.com/h5/color">Color</a>
-<a href="http://api.jinxiansen.com/h5/reboot">Reboot</a>
-<a href="http://api.jinxiansen.com/h5/loader">Loader</a>
-<a href="http://api.jinxiansen.com/h5/login">Login</a></p>
+<p>挑战介绍</p>
+<p>
+<a href="http://api.jinxiansen.com/help/IN-0001">独木桥</a>
+</p>
 
 <h2 id="toc_91">反馈</h2>
 
-<p>如果有任何问题或建议，可以提一个 <a href="https://github.com/Jinxiansen/SwiftServerSide-Vapor/issues">Issue</a></p>
-
-<p>或联系我：<a href="http://jinxiansen.com">Jinxiansen</a></p>
-
-
-
+<p>如果有任何问题或建议请联系我：黑胡子（QQ：421974087）</p>
 
 </body>
 

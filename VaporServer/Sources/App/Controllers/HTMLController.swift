@@ -15,6 +15,7 @@ class HTMLController: RouteCollection {
         router.get("/", use: api)
       
         router.group("h5") { (group) in
+            group.get("hello", use: hello)
             group.get("userPrivacy", use: userPrivacy)
             group.get("userProtocol", use: userProtocol)
         }
@@ -46,7 +47,7 @@ extension HTMLController {
             var name: String?
             var age: Int?
         }
-        let per = Person(name: "jack", age: 18)
+        let per = Person(name: "黑胡子", age: 99)
         return try req.view().render("leaf/hello",per)
     }
     
@@ -68,15 +69,3 @@ extension HTMLController {
         return try req.view().render("leaf/IN-0001")
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
