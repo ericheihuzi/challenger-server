@@ -265,7 +265,7 @@ extension GameController {
                     try Data(file.data).write(to: URL(fileURLWithPath: path))
                 }
                 
-                let gameInfo: GameInfo?
+                var gameInfo: GameInfo?
                 if var existInfo = existInfo { //存在则更新。
                     gameInfo = existInfo.update(with: container)
                     
